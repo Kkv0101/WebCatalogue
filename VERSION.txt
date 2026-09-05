@@ -1,0 +1,1 @@
+7.6.6 - server-forced Performance_Curve.csv tag replacement with CC/CAP compatibility

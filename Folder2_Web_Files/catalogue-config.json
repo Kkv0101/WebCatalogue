@@ -1,0 +1,83 @@
+{
+  "appTitle": "Condensing Unit Product Catalogue",
+  "datasheetMode": "docx-template-pdf",
+  "templateFile": "DatasheetTemplate.docx",
+  "mappingFile": "parameter_mapping.json",
+  "previewMode": "new-tab-browser-pdf-viewer",
+  "previewRetentionMinutes": 120,
+  "applicationVersion": "7.6.6",
+  "previewStorageProperty": null,
+  "temporaryPreviewFiles": false,
+  "mappingExecution": "browser",
+  "mappingScript": "TemplateMappingService.js",
+  "serverModuleExecution": "apps-script-dynamic-loader",
+  "serverModuleFiles": [
+    "DriveFileService.js",
+    "WorkbookService.js",
+    "DocxPdfService.js",
+    "CatalogueService.js"
+  ],
+  "datasheetImageReplacement": true,
+  "graphicFormats": [
+    "png",
+    "jpg",
+    "jpeg"
+  ],
+  "graphicImageDescriptions": {
+    "DRAWING_3d": "img_3D",
+    "EXTERNAL_DIMENSIONS": "img_Dimensions",
+    "ELECTRICAL_DIAGRAM": "img_Wiring",
+    "ENVELOPE": "img_Envelope"
+  },
+  "homepagePerformance": {
+    "standard": "EN13215_RG20",
+    "datasheetStandard": "EN13215 RG20",
+    "displayFields": [
+      "Cooling Capacity",
+      "COP"
+    ],
+    "ratedPointsByApplication": {
+      "M/HBP": {
+        "Te": -10,
+        "Ta": 32
+      },
+      "HBP": {
+        "Te": -10,
+        "Ta": 32
+      },
+      "MBP": {
+        "Te": -10,
+        "Ta": 32
+      },
+      "LBP": {
+        "Te": -35,
+        "Ta": 32
+      }
+    }
+  },
+  "datasheetPerformanceCurve": {
+    "sourceFile": "Performance_Curve.csv",
+    "standard": "EN13215 RG20",
+    "matching": [
+      "refrigerant",
+      "standard",
+      "Application"
+    ],
+    "calculatedFields": [
+      "Cooling Capacity",
+      "Power Consumption",
+      "COP"
+    ],
+    "supportedDelimiters": [
+      "comma",
+      "semicolon",
+      "tab",
+      "pipe"
+    ],
+    "serverForcedReplacement": true,
+    "coolingCapacityTagAliases": [
+      "CCx-y",
+      "CAPx-y"
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    /*__FONT_STYLE__*/
+    /*__APP_STYLE__*/
+  </style>
+</head>
+<body>
+  <div id="loading-overlay" class="loading-overlay" aria-live="polite">
+    <div class="spinner"></div>
+    <div id="loading-text">Loading catalogue…</div>
+  </div>
+
+  <header class="app-header">
+    <div>
+      <div class="brand-kicker">PRODUCT DATA</div>
+      <h1 id="app-title">Condensing Unit Product Catalogue</h1>
+    </div>
+  </header>
+
+  <main>
+    <section id="catalogue-view" class="catalogue-view">
+      <div class="filter-panel">
+        <label class="search-field">
+          <span>Search</span>
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Model or engineering code"
+            autocomplete="off"
+          >
+        </label>
+
+        <label>
+          <span>Refrigerant</span>
+          <select id="filter-refrigerant">
+            <option value="">All</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Application</span>
+          <select id="filter-application">
+            <option value="">All</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Motor type</span>
+          <select id="filter-motor">
+            <option value="">All</option>
+          </select>
+        </label>
+
+        <button
+          id="clear-filters"
+          class="button ghost"
+          type="button"
+        >
+          Clear filters
+        </button>
+      </div>
+
+      <div class="catalogue-summary">
+        <strong id="result-count">0 products</strong>
+        <span>
+          Select a product to generate and open its PDF datasheet.
+        </span>
+      </div>
+
+      <div id="product-grid" class="product-grid"></div>
+
+      <div id="empty-state" class="empty-state hidden">
+        No products match the selected filters.
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="alert"></div>
+
+  <script>
+    window.APP_RUNTIME = /*__RUNTIME_CONFIG__*/;
+    /*__TEMPLATE_MAPPING_SCRIPT__*/
+    /*__APP_SCRIPT__*/
+  </script>
+</body>
+</html>

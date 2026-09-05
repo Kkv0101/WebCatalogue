@@ -1,0 +1,379 @@
+{
+  "version": 3,
+  "templateFile": "DatasheetTemplate.docx",
+  "blankValue": "",
+  "fields": [
+    {
+      "source": "MATNR",
+      "tag": "BOM"
+    },
+    {
+      "source": "NAME",
+      "tag": "N/A"
+    },
+    {
+      "source": "ZZMODEL",
+      "tag": "ZZMODEL"
+    },
+    {
+      "source": "CU_GENERAL_REFRIGERANT",
+      "tag": "Refrig_name"
+    },
+    {
+      "source": "CU_GENERAL_EXP_DEVICE",
+      "tag": "EXP_Device"
+    },
+    {
+      "source": "CU_GENERAL_WEIGHT",
+      "tag": "Weight_val"
+    },
+    {
+      "source": "CU_GENERAL_RECEIVER",
+      "tag": "Receiver_volume"
+    },
+    {
+      "source": "CU_GENERAL_ DRAIN_PAN_VOLUME_EDP",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_GENERAL_ENERGY_SUPPLY_1",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_GENERAL_FREQUENCY_1",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_GENERAL_ENERGY_SUPPLY_2",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_GENERAL_FREQUENCY_2",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_GENERAL_HEIGHT",
+      "tag": "Height_val"
+    },
+    {
+      "source": "CU_GENERAL_LENGTH",
+      "tag": "Length_val"
+    },
+    {
+      "source": "CU_GENERAL_WIDTH",
+      "tag": "Width_val"
+    },
+    {
+      "source": "CU_GENERAL_APPROVALS",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_ELETR_MOTORTYPE",
+      "tag": "Motor_type"
+    },
+    {
+      "source": "CU_ELETR_COMPRESSOR_LRA",
+      "tag": "LRA_val"
+    },
+    {
+      "source": "CU_RLA",
+      "tag": "RLA_val"
+    },
+    {
+      "source": "CU_MCC",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_MOTOR_CURRENT",
+      "tag": "N/A"
+    },
+    {
+      "source": "MAX_OVERCURRENT_ PROTECTION_MOP",
+      "tag": "MOP_val"
+    },
+    {
+      "source": "MIN_CIRCUIT_AMPACITY_MCA",
+      "tag": "MCA_val"
+    },
+    {
+      "source": "CU_MOTOR_NUMBER",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_MOTOR_SHAFT_POWER",
+      "tag": "Shaft_power"
+    },
+    {
+      "source": "CU_MOTOR_AIR_FLOW",
+      "tag": "Air_flow"
+    },
+    {
+      "source": "CU_MOTOR_BLADE_DIAM",
+      "tag": "Blade_diameter"
+    },
+    {
+      "source": "APPLICATION",
+      "tags": [
+        "Applic_type",
+        "Applic_Type"
+      ]
+    },
+    {
+      "source": "ENVELOPE",
+      "tag": "img_Envelope"
+    },
+    {
+      "source": "ELECTRICAL_DIAGRAM",
+      "tag": "img_Wiring"
+    },
+    {
+      "source": "DRAWING_3d",
+      "tag": "img_3D"
+    },
+    {
+      "source": "EXTERNAL_DIMENSIONS",
+      "tag": "img_Dimensions"
+    },
+    {
+      "source": "CU_INCL_COMPRESSOR_DESCR",
+      "tag": "Comp_desc"
+    },
+    {
+      "source": "CU_INCL_COMPRESSOR_CODE",
+      "tag": "Comp_code"
+    },
+    {
+      "source": "CU_INCL_CONDENSER_DESCR",
+      "tag": "Cond_desc"
+    },
+    {
+      "source": "CU_INCL_CONDENSER_CODE",
+      "tag": "Cond_code"
+    },
+    {
+      "source": "CU_INCL_FANKIT_DESCR",
+      "tag": "Fankit_desc"
+    },
+    {
+      "source": "CU_INCL_FANKIT_CODE",
+      "tag": "Fankit_code"
+    },
+    {
+      "source": "CU_INCL_ELKIT_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_ELKIT_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_VALVE_SUCA_DESCR",
+      "tag": "Suc_desc"
+    },
+    {
+      "source": "CU_INCL_VALVE_SUCA_CODE",
+      "tag": "Suc_code"
+    },
+    {
+      "source": "CU_INCL_VALVE_DISCH_DESCR",
+      "tag": "Dis_desc"
+    },
+    {
+      "source": "CU_INCL_VALVE_DISCH_CODE",
+      "tag": "Dis_code"
+    },
+    {
+      "source": "CU_INCL_DRYER_DESCR",
+      "tag": "Dryer_desc"
+    },
+    {
+      "source": "CU_INCL_DRYER_CODE",
+      "tag": "Dryer_code"
+    },
+    {
+      "source": "CU_INCL_SIGHTGLASS_DESCR",
+      "tag": "Sight_desc"
+    },
+    {
+      "source": "CU_INCL_SIGHTGLASS_CODE",
+      "tag": "Sight_code"
+    },
+    {
+      "source": "CU_INCL_DUALPRESSOSTAT_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_DUALPRESSOSTAT_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_HPPRESSOSTAT_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_HPPRESSOSTAT_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_LPPRESSOSTAT_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_LPPRESSOSTAT_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_HEATER_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_HEATER_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_FLEXIHOSE_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_FLEXIHOSE_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_CABLE_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_CABLE_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_CONTROLLER_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_CONTROLLER_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_OTHER1_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_OTHER1_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_OTHER2_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_OTHER2_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_COVER_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_COVER_CODE",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_FANSPEED_DESCR",
+      "tag": "N/A"
+    },
+    {
+      "source": "CU_INCL_FANSPEED_CODE",
+      "tag": "N/A"
+    }
+  ],
+  "computedFields": [
+    {
+      "type": "powerSupply",
+      "tag": "Power Supply"
+    },
+    {
+      "type": "ratedPoint",
+      "source": "Standard",
+      "tag": "Standard_name",
+      "index": 0
+    },
+    {
+      "type": "ratedPoint",
+      "source": "RatedAmbientTemperature_C",
+      "tag": "R_Ta",
+      "index": 0
+    },
+    {
+      "type": "ratedPoint",
+      "source": "RatedEvaporatingTemperature_C",
+      "tag": "R_Te",
+      "index": 0
+    },
+    {
+      "type": "ratedPoint",
+      "source": "RatedCapacity_W",
+      "tag": "R_CAPACITY",
+      "index": 0
+    },
+    {
+      "type": "ratedPoint",
+      "source": "RatedEfficiency_WW",
+      "tag": "R_COP",
+      "index": 0
+    },
+    {
+      "type": "ratedPoint",
+      "source": "RatedPowerConsumption_W",
+      "tag": "R_CONSUMPTION",
+      "index": 0
+    }
+  ],
+  "performanceCurves": [
+    {
+      "ambientTemperatureC": 25,
+      "maxRows": 5,
+      "tags": {
+        "evaporatingTemperature": "Te1-{row}",
+        "coolingCapacity": "CAP1-{row}",
+        "efficiency": "COP1-{row}",
+        "powerConsumption": "CON1-{row}"
+      }
+    },
+    {
+      "ambientTemperatureC": 32,
+      "maxRows": 5,
+      "tags": {
+        "evaporatingTemperature": "Te2-{row}",
+        "coolingCapacity": "CAP2-{row}",
+        "efficiency": "COP2-{row}",
+        "powerConsumption": "CON2-{row}"
+      }
+    },
+    {
+      "ambientTemperatureC": 43,
+      "maxRows": 4,
+      "tags": {
+        "evaporatingTemperature": "Te3-{row}",
+        "coolingCapacity": "CAP3-{row}",
+        "efficiency": "COP3-{row}",
+        "powerConsumption": "CON3-{row}"
+      }
+    }
+  ],
+  "preservedTemplateText": [
+    "Envelope",
+    "2D",
+    "wiring"
+  ],
+  "imageSettings": {
+    "allowedExtensions": [
+      "png",
+      "jpg",
+      "jpeg"
+    ],
+    "fitMode": "contain",
+    "missingImageAction": "keepTemplateImage",
+    "descriptionMatching": "case-sensitive"
+  }
+}
