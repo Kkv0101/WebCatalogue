@@ -73,5 +73,15 @@ CON tag <- calculated Power Consumption
 Capacity and Power Consumption are formatted as whole Watts. COP is formatted
 to two decimal places with trailing zeroes removed.
 
+Missing performance information does not stop datasheet generation. Missing
+coefficient rows, incomplete coefficients, missing or invalid temperatures,
+and unavailable results are represented by `--` in the affected cells. Valid
+values are retained, including known temperatures and independently calculated
+capacity or power. COP is `--` when either input is unavailable or power is zero.
+The same fallback applies to Rated Point values. Performance tags defined in
+the CSV without a matching row for the product are also replaced with `--`,
+including the equivalent CC/CAP tags. Calculation warnings are returned with
+the generated PDF.
+
 The current `parameter_mapping.json.performanceCurves` section is not used for
 Version 7.6.4 detailed performance when the CSV context is present.

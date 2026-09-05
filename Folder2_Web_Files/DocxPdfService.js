@@ -77,7 +77,19 @@
         engineeringCode
       );
 
-    const warnings = [];
+    const warnings = (
+      context.performanceCurveDiagnostics
+        ? context.performanceCurveDiagnostics.warnings || []
+        : []
+    ).slice();
+
+    if (context.ratedPoint && !context.ratedPoint.available) {
+      warnings.push(
+        'Rated point calculation unavailable: ' +
+        context.ratedPoint.status +
+        '. Missing performance values were replaced with --.'
+      );
+    }
     let temporaryDocumentId = null;
 
     try {

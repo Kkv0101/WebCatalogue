@@ -175,7 +175,9 @@ function getProductTemplateContext_(
         standard:
           calculatedPerformanceCurve.standard,
         status:
-          calculatedPerformanceCurve.status
+          calculatedPerformanceCurve.status,
+        warnings:
+          calculatedPerformanceCurve.warnings
       },
 
     database:
@@ -348,6 +350,11 @@ function calculatePerformanceAtPoint_(
       productRow.PD_Config
     );
 
+  if (!Number.isFinite(Te) || !Number.isFinite(Ta)) {
+    result.status = 'missing-or-invalid-temperature';
+    return result;
+  }
+
   if (!pdConfig) {
     result.status =
       'missing-pd-config';
@@ -418,17 +425,9 @@ function calculatePerformanceAtPoint_(
       Ta
     );
 
-  if (
-    coolingCapacity === null ||
-    powerConsumption === null
-  ) {
-    result.status =
-      'invalid-coefficients';
-
-    return result;
-  }
-
   const cop =
+    Number.isFinite(coolingCapacity) &&
+    Number.isFinite(powerConsumption) &&
     powerConsumption !== 0
       ? coolingCapacity /
         powerConsumption
@@ -476,7 +475,9 @@ function calculatePerformanceAtPoint_(
   result.status =
     result.available
       ? 'ok'
-      : 'invalid-result';
+      : coolingCapacity === null || powerConsumption === null
+        ? 'invalid-coefficients'
+        : 'invalid-result';
 
   return result;
 }
@@ -803,18 +804,6 @@ function parsePerformanceCurveCsv_(
           rowNumber
       };
 
-      if (
-        !row.refrigerant ||
-        !row.standard ||
-        !row.application
-      ) {
-        throw new Error(
-          'Performance_Curve.csv row ' +
-          rowNumber +
-          ' must contain refrigerant, standard and Application.'
-        );
-      }
-
       [
         row.tags.Te,
         row.tags.CC,
@@ -915,18 +904,10 @@ function csvNumber_(
       value.replace(/,/g, '.')
     );
 
-  if (!Number.isFinite(parsed)) {
-    throw new Error(
-      'Performance_Curve.csv row ' +
-      rowNumber +
-      ' has invalid ' +
-      columnName +
-      ': ' +
-      value
-    );
-  }
-
-  return parsed;
+  // A missing temperature must not be interpreted as zero.
+  return value && Number.isFinite(parsed)
+    ? parsed
+    : null;
 }
 
 function csvTag_(
@@ -1019,6 +1000,9 @@ function buildDatasheetPerformanceCurveFromRows_(
       .filter(
         function (row) {
           return (
+            row.refrigerant &&
+            row.standard &&
+            row.application &&
             normalizeRefrigerant_(
               row.refrigerant
             ) ===
@@ -1043,6 +1027,24 @@ function buildDatasheetPerformanceCurveFromRows_(
   const calculatedRows = [];
   const usedTags = {};
   const tagGroups = [];
+  const warnings = [];
+
+  // Clear every defined performance cell, including cells with no matching
+  // row for this product. Selected rows overwrite these defaults below.
+  (allTags || []).forEach(function (tag) {
+    performanceCurveTagCandidates_('CC', tag).forEach(
+      function (candidate) {
+        replacements[candidate] = '--';
+      }
+    );
+  });
+
+  if (!selected.length) {
+    warnings.push(
+      'No matching Performance_Curve.csv rows. ' +
+      'Missing performance values were replaced with --.'
+    );
+  }
 
   selected.forEach(
     function (definition) {
@@ -1056,8 +1058,8 @@ function buildDatasheetPerformanceCurveFromRows_(
         );
 
       if (!point.available) {
-        throw new Error(
-          'Performance calculation failed for ' +
+        warnings.push(
+          'Performance calculation unavailable for ' +
           'Performance_Curve.csv row ' +
           definition.csvRowNumber +
           ' (Ta=' +
@@ -1065,7 +1067,8 @@ function buildDatasheetPerformanceCurveFromRows_(
           ', Te=' +
           definition.Te +
           '): ' +
-          point.status
+          point.status +
+          '. Missing performance values were replaced with --.'
         );
       }
 
@@ -1157,6 +1160,9 @@ function buildDatasheetPerformanceCurveFromRows_(
         copWW:
           point.copWW,
 
+        status:
+          point.status,
+
         tags:
           definition.tags
       });
@@ -1179,9 +1185,12 @@ function buildDatasheetPerformanceCurveFromRows_(
     rows:
       calculatedRows,
 
+    warnings:
+      warnings,
+
     status:
       selected.length
-        ? 'ok'
+        ? warnings.length ? 'incomplete-performance-data' : 'ok'
         : 'no-matching-performance-curve-rows'
   };
 }
@@ -1467,21 +1476,16 @@ function calculateHomepagePerformance_(
  * RatedPowerConsumption_W
  *
  * @param {Object} ratedPoint
- * @return {Object|null}
+ * @return {Object}
  */
 function buildRatedPointTemplateRow_(
   ratedPoint
 ) {
-  if (
-    !ratedPoint ||
-    ratedPoint.available !== true
-  ) {
-    return null;
-  }
+  ratedPoint = ratedPoint || {};
 
   return {
     Standard:
-      ratedPoint.displayStandard,
+      ratedPoint.displayStandard || '--',
 
     RatedAmbientTemperature_C:
       formatCalculationNumber_(
@@ -1516,12 +1520,10 @@ function buildRatedPointTemplateRow_(
       ),
 
     RatedCurrentConsumption_A:
-      ratedPoint.currentConsumptionA === null
-        ? ''
-        : formatCalculationNumber_(
-            ratedPoint.currentConsumptionA,
-            2
-          )
+      formatCalculationNumber_(
+        ratedPoint.currentConsumptionA,
+        2
+      )
   };
 }
 
@@ -1676,13 +1678,14 @@ function roundNumber_(
 /**
  * Formats calculated values for template replacement.
  * Integers contain no decimal places.
+ * Missing or invalid performance values use --.
  */
 function formatCalculationNumber_(
   value,
   decimals
 ) {
   if (!Number.isFinite(value)) {
-    return '';
+    return '--';
   }
 
   if (!decimals) {
