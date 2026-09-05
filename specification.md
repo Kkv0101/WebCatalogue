@@ -66,7 +66,7 @@ Resolution rules:
 5. Resolve the database graphic file in the configured Shared Drive folder.
 6. Insert the new image at the same paragraph child index.
 7. Fit the image inside the original placeholder without changing its aspect
-   ratio.
+   ratio. For palceholder "img_3D" set height at 6cm, for width keep origial picture ascpet ratio 
 8. Copy the Image Description, alternate title and link.
 9. Remove the original placeholder image.
 10. Save the temporary document and export it to PDF.

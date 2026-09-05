@@ -445,10 +445,11 @@
         imageBlob
       );
 
-    fitImageContain_(
+    sizeReplacementImage_(
       newImage,
       frameWidth,
-      frameHeight
+      frameHeight,
+      description
     );
 
     newImage.setAltDescription(
@@ -474,13 +475,14 @@
   }
 
   /**
-   * Preserves the graphic aspect ratio and fits it inside the template image
-   * frame.
+   * Preserves the replacement graphic's aspect ratio. img_3D uses a fixed
+   * 6 cm height; other images fit inside the original template image frame.
    */
-  function fitImageContain_(
+  function sizeReplacementImage_(
     image,
     frameWidth,
-    frameHeight
+    frameHeight,
+    description
   ) {
     const sourceWidth =
       Math.max(1, image.getWidth());
@@ -488,10 +490,18 @@
     const sourceHeight =
       Math.max(1, image.getHeight());
 
-    const scale = Math.min(
-      frameWidth / sourceWidth,
-      frameHeight / sourceHeight
-    );
+    // DocumentApp image dimensions use integer pixels (96 px per inch).
+    const fixedHeight =
+      description === 'img_3D'
+        ? Math.round(6 * 96 / 2.54)
+        : null;
+
+    const scale = fixedHeight !== null
+      ? fixedHeight / sourceHeight
+      : Math.min(
+          frameWidth / sourceWidth,
+          frameHeight / sourceHeight
+        );
 
     const width = Math.max(
       1,

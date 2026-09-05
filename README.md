@@ -63,8 +63,11 @@ The PDF is still generated and the application reports a warning.
 
 ## Image sizing
 
-The new image preserves its aspect ratio and is fitted inside the width and
-height of the original template image.
+The replacement image preserves its own aspect ratio. For `img_3D`, the height
+is fixed at 6 cm (227 pixels, rounded to DocumentApp's integer pixel units),
+and the width is scaled proportionally, even if it exceeds the original
+placeholder. All other images are fitted inside the width and height of the
+original template image.
 
 ## Tests
 
