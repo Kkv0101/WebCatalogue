@@ -2,84 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Condensing Unit Product Catalogue</title>
   <style>
     /*__FONT_STYLE__*/
     /*__APP_STYLE__*/
   </style>
 </head>
 <body>
-  <div id="loading-overlay" class="loading-overlay" aria-live="polite">
-    <div class="spinner"></div>
+  <a class="skip-link" href="#catalogue-view">Skip to catalogue</a>
+  <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
     <div id="loading-text">Loading catalogue…</div>
   </div>
-
-  <header class="app-header">
-    <div>
-      <div class="brand-kicker">PRODUCT DATA</div>
-      <h1 id="app-title">Condensing Unit Product Catalogue</h1>
-    </div>
+  <header class="filter-bar">
+    <form id="catalogue-filters" aria-label="Filter catalogue">
+      <span id="text-filter-help" class="visually-hidden">Results update as you type. Matching is not case-sensitive.</span>
+      <div class="shared-columns-inner">
+        <div id="shared-columns-scroll" class="table-scroll shared-columns-scroll" role="region" aria-label="Catalogue filters and sorting. Scroll horizontally to see all columns." tabindex="0">
+          <table class="product-table shared-columns-table">
+            <caption class="visually-hidden">Column headings for all model tables</caption>
+            <colgroup id="shared-column-widths"></colgroup>
+            <thead><tr id="shared-column-headings"></tr></thead>
+          </table>
+        </div>
+      </div>
+    </form>
   </header>
-
-  <main>
-    <section id="catalogue-view" class="catalogue-view">
-      <div class="filter-panel">
-        <label class="search-field">
-          <span>Search</span>
-          <input
-            id="search-input"
-            type="search"
-            placeholder="Model or engineering code"
-            autocomplete="off"
-          >
-        </label>
-
-        <label>
-          <span>Refrigerant</span>
-          <select id="filter-refrigerant">
-            <option value="">All</option>
-          </select>
-        </label>
-
-        <label>
-          <span>Application</span>
-          <select id="filter-application">
-            <option value="">All</option>
-          </select>
-        </label>
-
-        <label>
-          <span>Motor type</span>
-          <select id="filter-motor">
-            <option value="">All</option>
-          </select>
-        </label>
-
-        <button
-          id="clear-filters"
-          class="button ghost"
-          type="button"
-        >
-          Clear filters
-        </button>
+  <main id="catalogue-view" class="catalogue-view">
+    <div class="page-heading">
+      <div class="page-intro">
+        <p class="eyebrow">Product catalogue</p>
+        <h1 id="app-title">Condensing Units</h1>
+        <p class="page-description">Find models and compare rated performance using the column filters above.</p>
+        <p class="rated-note"><strong>Rated point</strong><span>Cooling capacity and COP at the rated conditions for the standard shown in each row.</span></p>
       </div>
-
-      <div class="catalogue-summary">
-        <strong id="result-count">0 products</strong>
-        <span>
-          Select a product to generate and open its PDF datasheet.
-        </span>
-      </div>
-
-      <div id="product-grid" class="product-grid"></div>
-
-      <div id="empty-state" class="empty-state hidden">
-        No products match the selected filters.
-      </div>
-    </section>
+      <p id="result-count" class="result-count" role="status" aria-live="polite" aria-atomic="true">Showing 0 models | 0 engineering codes</p>
+    </div>
+    <div id="model-groups" class="model-groups"></div>
+    <div id="empty-state" class="empty-state hidden" role="status">
+      <h2>No matching products</h2>
+      <p>Try a different combination or clear the filters to see all models.</p>
+      <button id="empty-clear-filters" class="empty-clear-filters" type="button">Clear filters</button>
+    </div>
   </main>
-
   <div id="toast" class="toast hidden" role="alert"></div>
-
   <script>
     window.APP_RUNTIME = /*__RUNTIME_CONFIG__*/;
     /*__TEMPLATE_MAPPING_SCRIPT__*/

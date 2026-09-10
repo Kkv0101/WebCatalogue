@@ -1,0 +1,160 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Unified catalogue header - design proposal</title><style>:root {
+  --ink: #14232d;
+  --muted: #627587;
+  --toolbar: #172129;
+  --line: #d7e0e6;
+  --stripe: #f0f4f6;
+  --accent: #007d93;
+  --link: #0074cf;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; scroll-padding-top: calc(var(--catalogue-header-height, 140px) + 16px); }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: #fafcfd;
+  font-family: "Embraco BeauSans", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: .55; }
+button:focus-visible, select:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.hidden { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.skip-link { position: fixed; top: -80px; left: 16px; z-index: 150; padding: 12px 16px; background: #fff; color: var(--accent); }
+.skip-link:focus { top: 12px; }
+.filter-bar { position: sticky; top: 0; z-index: 20; background: var(--toolbar); border-bottom: 1px solid #34424a; }
+.filter-bar-inner { display: grid; grid-template-columns: 28px repeat(5, minmax(0, 1fr)) auto; align-items: center; gap: 14px; margin: 0 auto; padding: 14px 32px; max-width: 1920px; }
+.shared-columns-bar { color: var(--ink); background: #e9eef2; }
+.shared-columns-inner { max-width: 1920px; margin: 0 auto; padding: 0 32px; }
+.shared-columns-scroll { border-left: 1px solid transparent; border-right: 1px solid transparent; }
+.filter-icon { width: 24px; height: 24px; fill: #f3f8fa; }
+.filter-control { position: relative; display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 64px; padding: 7px 14px; color: #f3f7fa; border: 1px solid #526573; border-radius: 6px; background: #ffffff03; }
+.filter-control > span { padding-right: 14px; font-size: 11px; line-height: 1.4; }
+.filter-control::after { position: absolute; right: 15px; top: 30px; width: 8px; height: 8px; content: ""; border-right: 2px solid #eef6fa; border-bottom: 2px solid #eef6fa; transform: rotate(45deg); pointer-events: none; }
+.filter-control select { width: 100%; padding: 3px 22px 0 0; color: #fff; border: 0; background: transparent; appearance: none; font-size: 16px; line-height: 1.4; text-overflow: ellipsis; cursor: pointer; }
+.filter-text-control::after { display: none; }
+.filter-control input { width: 100%; min-width: 0; padding: 3px 0 0; color: #fff; border: 0; background: transparent; font-size: 16px; line-height: 1.4; }
+.filter-control input::placeholder { color: #b8c8d3; opacity: 1; }
+.filter-control option { color: var(--ink); background: #fff; }
+.filter-control:focus-within { outline: 2px solid #59dbe7; outline-offset: 2px; }
+.filter-control select:focus, .filter-control input:focus { outline: none; }
+.filter-control.is-active { border-color: #53d5e1; background: #28beca12; }
+.clear-filters { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 8px 0 8px 12px; color: #54dce8; background: none; border: 0; white-space: nowrap; font-size: 14px; }
+.clear-filters svg { width: 24px; height: 24px; }
+.clear-filters:focus-visible { outline-color: #54dce8; }
+.clear-filters:hover:not(:disabled) span { text-decoration: underline; text-underline-offset: 4px; }
+.catalogue-view { width: 100%; max-width: 1920px; margin: 0 auto; padding: 36px 32px 48px; }
+.page-heading { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 30px; }
+.eyebrow { margin: 0 0 8px; color: #4c6375; font-size: 10px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; }
+.page-heading h1 { margin: 0 0 8px; color: #101b22; font-size: clamp(28px, 3vw, 40px); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+.page-description { margin: 0; color: var(--muted); font-size: 14px; }
+.rated-note { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin: 18px 0 0; font-size: 12px; color: var(--muted); }
+.rated-note strong { padding: 6px 12px; border-radius: 5px; background: #e0f2f5; color: #006e80; font-weight: 600; }
+.result-count { margin: 0 0 1px auto; color: #536b80; font-size: 13px; white-space: nowrap; }
+.model-groups { display: grid; gap: 24px; }
+.model-card { min-width: 0; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 5px #233d4c03; }
+.model-heading { margin: 0; font-size: inherit; }
+.model-toggle { display: flex; align-items: center; gap: 24px; width: 100%; min-height: 98px; padding: 14px 22px; color: var(--ink); background: #f6f8fa; border: 0; text-align: left; }
+.model-toggle:hover { background: #eef4f6; }
+.model-toggle:focus-visible { position: relative; z-index: 1; outline-offset: -4px; }
+.product-thumbnail { display: flex; align-items: center; justify-content: center; flex: 0 0 88px; width: 88px; height: 70px; color: #70818a; background: #e9eef2; border-radius: 7px; }
+.product-thumbnail img { width: 70px; height: 64px; object-fit: contain; mix-blend-mode: multiply; }
+.thumbnail-placeholder { width: 64px; height: 64px; }
+.model-title { display: flex; align-items: center; flex: 1; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.model-name { max-width: 100%; overflow-x: auto; white-space: nowrap; font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
+.variant-count { display: inline-block; padding: 5px 13px; color: #007b92; background: #d9f1f5; border-radius: 999px; font-size: 13px; line-height: 1.5; font-weight: 600; white-space: nowrap; }
+.group-chevron { width: 13px; height: 13px; flex: 0 0 13px; margin: 5px 4px 0 8px; border-top: 2px solid #425c70; border-left: 2px solid #425c70; transform: rotate(45deg); }
+.model-toggle[aria-expanded="false"] .group-chevron { transform: rotate(225deg); margin-top: -5px; }
+.table-scroll { width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.table-scroll:focus-visible { outline-offset: -3px; }
+.product-table { width: 100%; min-width: 1360px; table-layout: fixed; border-collapse: separate; border-spacing: 0; text-align: left; }
+.product-table th { height: 46px; padding: 0 16px; color: #375166; background: #e9eef2; border-top: 1px solid #dce4e9; border-bottom: 1px solid #e2e8ec; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.product-table th + th, .product-table td + td { border-left: 1px solid #e8edf1; }
+.sort-button { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; max-width: 100%; padding: 0; color: inherit; background: none; border: 0; text-align: left; text-transform: inherit; font-size: inherit; font-weight: inherit; }
+.sort-icon { display: grid; flex: 0 0 7px; gap: 3px; }
+.sort-icon::before, .sort-icon::after { content: ""; width: 0; height: 0; border-left: 3.5px solid transparent; border-right: 3.5px solid transparent; }
+.sort-icon::before { border-bottom: 3.5px solid currentColor; }
+.sort-icon::after { border-top: 3.5px solid currentColor; }
+[aria-sort="ascending"] .sort-icon::after, [aria-sort="descending"] .sort-icon::before { opacity: .25; }
+.product-table td { height: 58px; padding: 7px 16px; font-size: 16px; overflow-wrap: anywhere; vertical-align: middle; }
+.product-table th:nth-child(7), .product-table td:nth-child(7) { text-align: center; white-space: nowrap; }
+.product-table th:nth-child(7) .sort-button { width: 100%; justify-content: center; text-align: center; }
+.product-table th:nth-child(2), .product-table td:nth-child(2),
+.product-table th:nth-child(3), .product-table td:nth-child(3),
+.product-table th:nth-child(5), .product-table td:nth-child(5),
+.product-table th:nth-child(6), .product-table td:nth-child(6) { text-align: center; }
+.product-table th:nth-child(2) .sort-button, .product-table th:nth-child(3) .sort-button,
+.product-table th:nth-child(5) .sort-button, .product-table th:nth-child(6) .sort-button { width: 100%; justify-content: center; text-align: center; }
+.product-table th:nth-child(5), .product-table th:nth-child(6) { color: #006e80; background: #e0f0f3; }
+.product-table td:nth-child(5), .product-table td:nth-child(6) { font-variant-numeric: tabular-nums; font-weight: 600; color: #006b7b; background: #17a8b005; }
+.product-table tbody tr:nth-child(even) { background: var(--stripe); }
+.product-table tbody tr:hover { background: #e8f4f7; }
+.code-cell { white-space: nowrap; }
+.pdf-button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 4px 0; color: var(--link); background: none; border: 0; white-space: nowrap; font-size: 13px; }
+.pdf-button svg { width: 21px; height: 26px; flex-shrink: 0; }
+.pdf-button:hover span { text-decoration: underline; text-underline-offset: 3px; }
+.empty-state { padding: 56px 24px; text-align: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+.empty-state h2 { margin: 0 0 8px; font-size: 22px; }
+.empty-state p { margin: 0 0 20px; color: var(--muted); }
+.empty-clear-filters { padding: 10px 18px; color: var(--accent); background: #e3f3f6; border: 1px solid #b5dbe2; border-radius: 5px; }
+.loading-overlay { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; color: var(--ink); background: #fafcfdf5; text-align: center; }
+.spinner { width: 40px; height: 40px; border: 4px solid #dce6eb; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; right: 24px; bottom: 24px; z-index: 120; max-width: min(440px, calc(100vw - 32px)); padding: 14px 18px; color: #fff; background: #203542; border-radius: 6px; box-shadow: 0 5px 20px #0003; }
+@media (max-width: 1100px) {
+  .filter-bar-inner { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px 24px; }
+  .filter-icon { display: none; }
+  .clear-filters { justify-self: end; }
+  .catalogue-view { padding: 28px 24px 40px; }
+  .shared-columns-inner { padding-right: 24px; padding-left: 24px; }
+}
+@media (max-width: 680px) {
+  .filter-bar-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 12px 16px; }
+  .filter-control { min-height: 60px; padding-left: 10px; padding-right: 10px; }
+  .filter-control::after { right: 12px; }
+  .clear-filters { justify-self: center; padding-left: 0; font-size: 13px; }
+  .catalogue-view { padding: 24px 16px 32px; }
+  .shared-columns-inner { padding-right: 16px; padding-left: 16px; }
+  .page-heading { margin-bottom: 22px; }
+  .page-description { line-height: 1.6; }
+  .result-count { margin-left: 0; font-size: 12px; }
+  .model-groups { gap: 18px; }
+  .model-toggle { min-height: 94px; padding: 14px 12px; gap: 12px; }
+  .product-thumbnail { flex-basis: 48px; width: 48px; height: 52px; }
+  .product-thumbnail img, .thumbnail-placeholder { width: 44px; height: 44px; }
+  .model-title { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+  .model-name { font-size: 18px; }
+  .variant-count { font-size: 11px; padding: 3px 9px; }
+  .group-chevron { width: 10px; height: 10px; flex-basis: 10px; margin-left: 0; margin-right: 1px; }
+}
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } }
+
+html{scroll-padding-top:120px}.unified-bar{position:sticky;top:0;z-index:20;background:#172a33;box-shadow:0 1px 0 #30454f}.unified-inner{max-width:1920px;padding:0 32px;margin:auto}.unified-scroll{border:solid transparent;border-width:0 1px}.product-table{min-width:1660px}.unified-bar th{background:#172a33!important;color:#f0f6f8!important;height:106px;padding:10px 12px 14px;border-top:0;border-bottom:0;text-align:left!important;text-transform:none;font-size:13px}.unified-bar th+th{border-left-color:#344b55}.unified-bar th.rated-filter{background:#113b46!important}.parameter{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:32px;padding:0;color:inherit;border:0;background:none;text-align:left;font-size:13px;font-weight:500}.unified-bar input,.unified-bar select{width:100%;height:40px;padding:8px 10px;border:1px solid #506571;border-radius:5px;background:#20343e;color:#fff;font-size:14px}.unified-bar input::placeholder{color:#adc2ce;opacity:1}.unified-bar input:focus,.unified-bar select:focus{outline:2px solid #4fd0dc;outline-offset:1px}.unified-bar th.active{box-shadow:inset 0 -3px #52d3df}.unified-bar .document-label{display:block;min-height:32px;padding-top:7px;font-weight:500}.reset{height:40px;width:100%;padding:0;background:transparent;color:#54dce8;border:0;text-align:left;font-size:14px}.product-table td{padding:7px 12px;font-size:15px}.product-table td:nth-child(n){text-align:left;color:var(--ink);background:transparent;font-weight:400;white-space:nowrap}.product-table td:nth-child(3),.product-table td:nth-child(4),.product-table td:nth-child(6),.product-table td:nth-child(7),.product-table td:nth-child(8){text-align:center}.product-table td:nth-child(6),.product-table td:nth-child(7){font-weight:600;color:#007587;background:#17a8b005}.pdf-button{font-size:13px;gap:8px}.page-heading{margin-bottom:24px}.page-heading h1{font-size:32px}.catalogue-view{padding-top:28px}.model-toggle{min-height:92px}.model-name{font-size:22px}.proposal-footer{margin-top:22px;padding-top:14px;border-top:1px solid #d7e0e6;font-size:12px;color:#627587;display:flex;justify-content:space-between;gap:16px}.proposal-footer strong{color:#007d93}.empty{padding:40px;text-align:center;border:1px solid #d7e0e6;border-radius:8px}.subtitle{margin:12px 0 0;color:#627587;font-size:12px}@media(max-width:1100px){.unified-inner{padding:0 24px}}@media(max-width:680px){.unified-inner{padding:0 16px}.page-heading h1{font-size:26px}}
+</style></head><body><header class="unified-bar"><div class="unified-inner"><div id="head-scroll" class="table-scroll unified-scroll" tabindex="0" aria-label="Catalogue filters and sorting"><table class="product-table"><colgroup><col style="width:15%"><col style="width:13%"><col style="width:9%"><col style="width:9%"><col style="width:14%"><col style="width:9%"><col style="width:9%"><col style="width:12%"><col style="width:10%"></colgroup><thead><tr><th><button type="button" class="parameter" data-sort="model"><span>Model</span><span class="sort-icon" aria-hidden="true"></span></button><input aria-label="Filter Model" data-filter="model" type="text" autocomplete="off" placeholder="Type to filter models"></th><th><button type="button" class="parameter" data-sort="engineeringCode"><span>Engineering Code</span><span class="sort-icon" aria-hidden="true"></span></button><input aria-label="Filter Engineering Code" data-filter="engineeringCode" type="text" autocomplete="off" placeholder="Type to filter codes"></th><th><button type="button" class="parameter" data-sort="refrigerant"><span>Refrigerant</span><span class="sort-icon" aria-hidden="true"></span></button><select aria-label="Filter Refrigerant" data-filter="refrigerant"><option value="">All</option><option>R-290</option></select></th><th><button type="button" class="parameter" data-sort="frequency"><span>Frequency / Rotation</span><span class="sort-icon" aria-hidden="true"></span></button><select aria-label="Filter Frequency / Rotation" data-filter="frequency"><option value="">All</option><option>50</option></select></th><th><button type="button" class="parameter" data-sort="powerSupply"><span>Power Supply</span><span class="sort-icon" aria-hidden="true"></span></button><select aria-label="Filter Power Supply" data-filter="powerSupply"><option value="">All</option><option>220 - 240 V 50 Hz</option></select></th><th class="rated-filter"><button type="button" class="parameter" data-sort="capacity"><span>Cooling Capacity [W]</span><span class="sort-icon" aria-hidden="true"></span></button><input aria-label="Filter Cooling Capacity [W]" data-filter="capacity" type="number" min="0" step="any" placeholder="Min. W"></th><th class="rated-filter"><button type="button" class="parameter" data-sort="cop"><span>COP [W/W]</span><span class="sort-icon" aria-hidden="true"></span></button><input aria-label="Filter COP [W/W]" data-filter="cop" type="number" min="0" step="any" placeholder="Min. COP"></th><th><button type="button" class="parameter" data-sort="standard"><span>Standard</span><span class="sort-icon" aria-hidden="true"></span></button><select aria-label="Filter Standard" data-filter="standard"><option value="">All</option><option>ASHRAE</option><option>EN13215 RG20</option><option>EN13215 SH10</option></select></th><th><span class="document-label">Documents</span><button class="reset" type="button" id="reset">&#8634; &nbsp;Clear filters</button></th></tr></thead></table></div></div></header><main class="catalogue-view"><div class="page-heading"><div><p class="eyebrow">Product catalogue</p><h1>Condensing Units</h1><p class="page-description">Find models and compare rated performance using the column filters above.</p><p class="subtitle">Rated point &middot; Cooling Capacity and COP use the standard shown in each row.</p></div><p id="count" class="result-count" role="status" aria-live="polite"></p></div><div id="groups" class="model-groups"></div><footer class="proposal-footer"><strong>Unified header &middot; Awaiting approval</strong><span>Illustrative products, standards and performance values. Application unchanged.</span></footer></main><script>const data=[{"model":"UNEX2180UA","engineeringCode":"564DAE004AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","capacity":980,"cop":1.95,"standard":"EN13215 RG20"},{"model":"UNEX2180UA","engineeringCode":"564DAE404AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","capacity":1020,"cop":2.02,"standard":"EN13215 SH10"},{"model":"UNEX2180UA","engineeringCode":"564DAE704AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","capacity":1060,"cop":2.08,"standard":"ASHRAE"},{"model":"UNEX2190U","engineeringCode":"565CAE004AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","capacity":1120,"cop":2.05,"standard":"EN13215 RG20"},{"model":"UNEX2190U","engineeringCode":"565CAE404AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","capacity":1170,"cop":2.11,"standard":"EN13215 SH10"},{"model":"UNEX2190U","engineeringCode":"565CAE704AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","capacity":1210,"cop":2.18,"standard":"ASHRAE"}],columns=[["model","Model",15,"text","Type to filter models"],["engineeringCode","Engineering Code",13,"text","Type to filter codes"],["refrigerant","Refrigerant",9,"select"],["frequency","Frequency / Rotation",9,"select"],["powerSupply","Power Supply",14,"select"],["capacity","Cooling Capacity [W]",9,"number","Min. W"],["cop","COP [W/W]",9,"number","Min. COP"],["standard","Standard",12,"select"],["documents","Documents",10]],colgroup="<colgroup><col style=\"width:15%\"><col style=\"width:13%\"><col style=\"width:9%\"><col style=\"width:9%\"><col style=\"width:14%\"><col style=\"width:9%\"><col style=\"width:9%\"><col style=\"width:12%\"><col style=\"width:10%\"></colgroup>",icon="<svg class=\"thumbnail-placeholder\" viewBox=\"0 0 64 64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" aria-hidden=\"true\"><path d=\"m5 43 35-13 20 13-35 15Z M5 43v4l20 15 35-15v-4 M40 30V7l17 10v24 M40 7 25 13v20 M43 12v19m4-17v20m4-17v20m4-17v20\"/><ellipse cx=\"23\" cy=\"37\" rx=\"10\" ry=\"7\"/><path d=\"M13 37V26c0-9 20-9 20 0v11 M13 26c0 9 20 9 20 0 M18 44v6m10-7v5 M11 40 7 37v-7h6 M33 34l5 3v7\"/></svg>",pdf="<svg viewBox=\"0 0 24 30\" fill=\"none\" aria-hidden=\"true\"><path d=\"M5 2h9l7 7v17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z\" stroke=\"currentColor\" stroke-width=\"1.8\"/><path d=\"M14 2v7h7\" stroke=\"currentColor\" stroke-width=\"1.8\"/><text x=\"12\" y=\"22\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Arial,sans-serif\" font-size=\"8\" font-weight=\"700\">PDF</text></svg>";(function behavior(){
+ const filters={},collapsed=new Set();let sort={key:'engineeringCode',direction:1},left=0;const positions=new WeakMap();
+ const groups=document.querySelector('#groups'),head=document.querySelector('#head-scroll');
+ const collator=new Intl.Collator('en',{numeric:true,sensitivity:'base'});
+ const esc=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+ function setScroll(el,x){if(el.hidden||el.scrollLeft===x)return;el.scrollLeft=x;positions.set(el,el.scrollLeft);}
+ function sync(el){const expected=positions.get(el);positions.delete(el);if(expected===el.scrollLeft)return;left=Math.min(el.scrollLeft,head.scrollWidth-head.clientWidth);[head,...groups.querySelectorAll('.table-scroll')].forEach(s=>setScroll(s,left));}
+ head.addEventListener('scroll',()=>sync(head),{passive:true});groups.addEventListener('scroll',e=>{if(e.target.matches('.table-scroll'))sync(e.target);},{capture:true,passive:true});
+ function render(){
+  const visible=data.filter(p=>Object.keys(filters).every(k=>!filters[k]||(['model','engineeringCode'].includes(k)?p[k].toLowerCase().includes(filters[k].toLowerCase().trim()):['capacity','cop'].includes(k)?p[k]>=Number(filters[k]):p[k]===filters[k])));
+  const models=[...new Set(visible.map(p=>p.model))].sort(collator.compare);if(sort.key==='model'&&sort.direction<0)models.reverse();
+  document.querySelector('#count').textContent='Showing '+models.length+' of 2 models | '+visible.length+' engineering codes';
+  groups.innerHTML=models.map((model,index)=>{
+   const rows=visible.filter(p=>p.model===model).sort((a,b)=>(typeof a[sort.key]==='number'?a[sort.key]-b[sort.key]:collator.compare(a[sort.key],b[sort.key]))*sort.direction);
+   return '<section class="model-card"><h2 class="model-heading"><button class="model-toggle" data-toggle="'+model+'" aria-expanded="'+!collapsed.has(model)+'"><span class="product-thumbnail">'+icon+'</span><span class="model-title"><span class="model-name">'+model+'</span><span class="variant-count">'+rows.length+' engineering codes</span></span><span class="group-chevron"></span></button></h2><div class="table-scroll" tabindex="0"'+(collapsed.has(model)?' hidden':'')+'><table class="product-table">'+colgroup+'<thead class="visually-hidden"><tr>'+columns.map(c=>'<th scope="col">'+c[1]+'</th>').join('')+'</tr></thead><tbody>'+rows.map(p=>'<tr>'+columns.map(c=>'<td>'+(c[0]==='documents'?'<button class="pdf-button" title="Preview only">'+pdf+'<span>Datasheet</span></button>':c[0]==='cop'?p.cop.toFixed(2):esc(p[c[0]]))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></section>';
+  }).join('')||'<div class="empty">No matching products. Adjust or clear the filters.</div>';
+  groups.querySelectorAll('.table-scroll').forEach(s=>setScroll(s,left));
+  document.querySelectorAll('[data-filter]').forEach(c=>c.closest('th').classList.toggle('active',Boolean(c.value)));
+ }
+ document.querySelectorAll('[data-filter]').forEach(c=>c.addEventListener(c.tagName==='SELECT'?'change':'input',()=>{filters[c.dataset.filter]=c.value;render();}));
+ document.querySelectorAll('[data-sort]').forEach(b=>b.addEventListener('click',()=>{sort={key:b.dataset.sort,direction:sort.key===b.dataset.sort?-sort.direction:1};document.querySelectorAll('[data-sort]').forEach(s=>s.closest('th').setAttribute('aria-sort',s===b?(sort.direction>0?'ascending':'descending'):'none'));render();}));
+ document.querySelector('#reset').addEventListener('click',()=>{Object.keys(filters).forEach(k=>delete filters[k]);document.querySelectorAll('[data-filter]').forEach(c=>c.value='');render();});
+ groups.addEventListener('click',e=>{const b=e.target.closest('[data-toggle]');if(b){const m=b.dataset.toggle;collapsed.has(m)?collapsed.delete(m):collapsed.add(m);render();}else if(e.target.closest('.pdf-button')){alert('Design preview: datasheets are available in the application.');}});
+ render();
+})();</script></body></html>

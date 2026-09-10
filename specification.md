@@ -148,9 +148,7 @@ v Harku StandardTemp su uvedene typicke teploty tzv Rated Points v ktorych su uv
 ## 9.1 Perfromance Data - Rated Point
 
 Pre "Rated Point" sa priradia Ta a Te podla "Application" nasledovne
-1. If Application = "M/HBP" ==> Te=-10 Ta=32
-2. If Application = "HBP" ==> Te=-10 Ta=32
-3. If Application = "MBP" ==> Te=-10 Ta=32
+1. If Application = "M/HBP", "HBP", "MBP" ==> Te=-10 Ta=32
 4. If Application = "LBP" ==> Te=-35 Ta=32
 
 Pre Standard = "EN13215_RG20" sa potom dopocitaju podla Ta, Te a Coefficents pre polynom nasledovne hodnoty
@@ -158,7 +156,8 @@ Pre Standard = "EN13215_RG20" sa potom dopocitaju podla Ta, Te a Coefficents pre
 2. Power Consumption
 3. COP
 
-Na hlavnej stranke web catalogu ku kazdemu produktu sa vypocita a zobrazi hodnota "Rated Point" ktora zahrna "Cooling Capacity" a "COP" pre standard "EN13215_RG20"
+Na hlavnej stranke web catalogu ku kazdemu produktu sa vypocita a zobrazi hodnota "Rated Point" ktora zahrna "Cooling Capacity" a "COP" pre standardy "EN13215_RG20".
+Kzady produkt bude mat 2 linky, pre 2 datasheety. Kazdy datasheet  v kazdPre kazdy standard sa vygeneruje datasheet samostatne
 
 Do DatasheetTemplatu  sa pre doplnia tieto vypocitane parametre pre Rated point a nasledne sa nahradia jednotlive tag podla parameter_mapping.json
 1. "RatedCapacity_W" ==> Cooling Capacity
@@ -176,7 +175,7 @@ Kombinacie Te a Ta su v tabulke Performance_Curve.csv - je ulozeny vo WEB_FOLDER
 Struktura tabulky Performance_Curve.csv a popis stlpcov
 id - identifikator zaznamu
 refrigerant - refrigerant
-standard - standard, zatial stale "EN13215 RG20"
+standard - standard, "EN13215_RG20"
 Application - application "LBP", "M/HBP" alebo "HBP"
 Ta_val - hodnota Ta
 Te_val - hodnota Te
@@ -203,3 +202,20 @@ Implementation compatibility note:
 Current DatasheetTemplate.docx uses CAPx-y tags for Cooling Capacity. The
 application therefore accepts both CCx-y and CAPx-y as equivalent Cooling
 Capacity template tags.
+
+## 10 Initial screen layout
+Uvadona obrazovka obsahuje parametre v stlpcoch a v iradkoch su potom zoradene jednotlive produkty.
+Zoznam paramterov - v stlpcoch
+1. Model
+2. Engineering Code
+3. Refrigerant
+4. Frequency
+5. Power Supply
+6. Application
+7. Standard
+9. Capacity
+10. Efficiency
+11. Motor
+12. Datasheet
+
+Ak "Model" obsahuje viacero "Engineering code" (teda roznych verzii produktov) zgroup ich pod jeden model. Podobne ako Merge bunky v exceli. 

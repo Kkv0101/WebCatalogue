@@ -3,7 +3,7 @@
  *
  * Version 7.6.6 implements specification sections 9, 9.1 and 9.2:
  * - corrected A..J polynomial
- * - calculated Rated Point for EN13215_RG20
+ * - calculated homepage Rated Points for EN13215_RG20 and EN13215_SH10
  * - Rated Point values exposed to parameter_mapping.json for the datasheet
  * - detailed datasheet performance values calculated from Performance_Curve.csv
  */
@@ -11,17 +11,21 @@ function listProductSummaries_() {
   const snapshot = getDatabaseSnapshot_();
 
   return snapshot.products.map(function (row) {
-    const ratedPoint =
-      calculateRatedPointPerformance_(
-        row,
-        snapshot.curveCoefficients || []
+    const ratedPointsByStandard = {};
+    CATALOGUE_CONFIG.HOMEPAGE_PERFORMANCE_STANDARDS.forEach(function (standard) {
+      ratedPointsByStandard[standard] = calculateRatedPointPerformance_(
+        row, snapshot.curveCoefficients || [], standard
       );
+    });
+    const ratedPoint = ratedPointsByStandard[CATALOGUE_CONFIG.HOMEPAGE_PERFORMANCE_STANDARD];
 
     return {
       engineeringCode: text_(row.MATNR),
       model: text_(row.ZZMODEL),
       refrigerant:
         text_(row.CU_GENERAL_REFRIGERANT),
+      frequency:
+        text_(row.CU_GENERAL_FREQUENCY_1),
       application:
         text_(row.APPLICATION),
       motorType:
@@ -30,11 +34,16 @@ function listProductSummaries_() {
         formatPowerSupply_(row),
       status:
         text_(row.CODE_STATUS),
+      standard:
+        ratedPoint.standard,
+      drawing3d:
+        text_(row.DRAWING_3d),
 
       // Kept as "performance" for compatibility with app.js.
       performance: ratedPoint,
 
-      ratedPoint: ratedPoint
+      ratedPoint: ratedPoint,
+      ratedPointsByStandard: ratedPointsByStandard
     };
   }).filter(function (item) {
     return (
@@ -42,6 +51,30 @@ function listProductSummaries_() {
       item.model
     );
   });
+}
+
+/**
+ * Looks up a product drawing without calculating datasheet performance.
+ * The reference remains confined to the configured 3D graphics folder.
+ *
+ * @param {string} engineeringCode
+ * @return {string}
+ */
+function getProductThumbnailReference_(engineeringCode) {
+  const normalizedCode =
+    String(engineeringCode || '').trim().toLowerCase();
+
+  const productRow = getDatabaseSnapshot_().products.find(
+    function (row) {
+      return text_(row.MATNR).toLowerCase() === normalizedCode;
+    }
+  );
+
+  if (!productRow) {
+    throw new Error('Product not found: ' + engineeringCode);
+  }
+
+  return text_(productRow.DRAWING_3d);
 }
 
 /**
@@ -54,7 +87,8 @@ function listProductSummaries_() {
  * @return {Object}
  */
 function getProductTemplateContext_(
-  engineeringCode
+  engineeringCode,
+  requestedStandard
 ) {
   const snapshot =
     getDatabaseSnapshot_();
@@ -105,7 +139,8 @@ function getProductTemplateContext_(
   const ratedPoint =
     calculateRatedPointPerformance_(
       productRow,
-      snapshot.curveCoefficients || []
+      snapshot.curveCoefficients || [],
+      requestedStandard
     );
 
   const calculatedRatedPointRow =
@@ -121,7 +156,8 @@ function getProductTemplateContext_(
       productRow,
       snapshot.curveCoefficients || [],
       performanceCurveDefinition.rows,
-      performanceCurveDefinition.allTags
+      performanceCurveDefinition.allTags,
+      ratedPoint.standard
     );
 
   return {
@@ -188,8 +224,8 @@ function getProductTemplateContext_(
 /**
  * Calculates the Rated Point according to specification section 9.1.
  *
- * Calculation standard:
- *   EN13215_RG20
+ * Calculation standards:
+ *   EN13215_RG20 (default) or EN13215_SH10
  *
  * Datasheet display standard:
  *   EN13215 RG20
@@ -203,24 +239,16 @@ function getProductTemplateContext_(
  * Coefficient row:
  * - CDU Products Data.PD_Config = Curve Coefficients.PD_Config
  * - product refrigerant = Curve Coefficients.Refrigerant
- * - Curve Coefficients.Standard = EN13215_RG20
+ * - Curve Coefficients.Standard = the requested calculation standard
  *
  * @param {Object} productRow
  * @param {Array<Object>} curveRows
+ * @param {string=} requestedStandard Defaults to the configured RG20 standard.
  * @return {Object}
  */
-function calculateRatedPointPerformance_(
-  productRow,
-  curveRows
-) {
-  const calculationStandard =
-    CATALOGUE_CONFIG
-      .HOMEPAGE_PERFORMANCE_STANDARD;
-
-  const displayStandard =
-    CATALOGUE_CONFIG
-      .RATED_POINT_DISPLAY_STANDARD ||
-    calculationStandard;
+function calculateRatedPointPerformance_(productRow, curveRows, requestedStandard) {
+  const calculationStandard = resolveRatedPointStandard_(requestedStandard);
+  const displayStandard = calculationStandard.replace(/_/g, ' ');
 
   const application =
     normalizeApplication_(
@@ -309,6 +337,15 @@ function calculateRatedPointPerformance_(
     point.status;
 
   return result;
+}
+
+/** Normalize and validate the standard shared by catalogue and datasheet calculations. */
+function resolveRatedPointStandard_(requestedStandard) {
+  const calculationStandard = CATALOGUE_CONFIG.HOMEPAGE_PERFORMANCE_STANDARDS.find(function (standard) {
+    return normalizeStandard_(standard) === normalizeStandard_(requestedStandard || CATALOGUE_CONFIG.HOMEPAGE_PERFORMANCE_STANDARD);
+  });
+  if (!calculationStandard) throw new Error('Unsupported Rated Point standard: ' + requestedStandard);
+  return calculationStandard;
 }
 
 /**
@@ -964,7 +1001,7 @@ function csvTag_(
  * Filters Performance_Curve.csv for one product and calculates every selected
  * Ta / Te point.
  *
- * The current datasheet standard is EN13215 RG20.
+ * Uses the requested standard for both CSV points and coefficient selection.
  *
  * @param {Object} productRow
  * @param {Array<Object>} curveRows
@@ -976,13 +1013,10 @@ function buildDatasheetPerformanceCurveFromRows_(
   productRow,
   curveRows,
   definitionRows,
-  allTags
+  allTags,
+  requestedStandard
 ) {
-  const standard =
-    CATALOGUE_CONFIG
-      .PERFORMANCE_CURVE_STANDARD ||
-    CATALOGUE_CONFIG
-      .RATED_POINT_DISPLAY_STANDARD;
+  const standard = resolveRatedPointStandard_(requestedStandard);
 
   const refrigerant =
     normalizeRefrigerant_(

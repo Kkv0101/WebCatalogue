@@ -11,6 +11,15 @@
   const getProductTemplateContext_ =
     deps.getProductTemplateContext_;
 
+  const getProductThumbnailReference_ =
+    deps.getProductThumbnailReference_;
+
+  const resolveGraphicFile_ =
+    deps.resolveGraphicFile_;
+
+  const getGraphicImageBlob_ =
+    deps.getGraphicImageBlob_;
+
   const getRequiredWebResources_ =
     deps.getRequiredWebResources_;
 
@@ -51,8 +60,11 @@
     deps.clearAllCatalogueCaches_;
 
   const Drive = deps.Drive;
+  const DriveApp = deps.DriveApp;
+  const Utilities = deps.Utilities;
   const console = deps.console;
   const DateObject = deps.Date;
+  const MAX_THUMBNAIL_BYTES = 2 * 1024 * 1024;
 
   /**
    * SERVER-SIDE MODULE.
@@ -92,18 +104,90 @@
   }
 
   function getProductTemplateContext(
-    engineeringCode
+    engineeringCode,
+    standard
   ) {
     validateProductCode_(engineeringCode);
 
     return getProductTemplateContext_(
-      engineeringCode
+      engineeringCode,
+      standard
     );
+  }
+
+  /**
+   * Loads a drawing on demand through the authenticated Apps Script API.
+   * Drive-generated thumbnails keep catalogue payloads small; originals are
+   * used only when Drive has no thumbnail and the source fits the size cap.
+   * Missing or inaccessible graphics must not prevent catalogue use.
+   */
+  function getProductThumbnail(engineeringCode) {
+    validateProductCode_(engineeringCode);
+
+    const empty = { dataUrl: '' };
+    const reference =
+      getProductThumbnailReference_(engineeringCode);
+
+    if (!reference) return empty;
+
+    try {
+      const file = resolveGraphicFile_(
+        getRuntimeConfiguration_().graphic3dFolderId,
+        reference
+      );
+
+      if (!file) return empty;
+
+      let blob = null;
+
+      try {
+        blob = DriveApp.getFileById(file.id).getThumbnail();
+      } catch (error) {
+        console.warn('Drive thumbnail unavailable: ' + error.message);
+      }
+
+      if (!blob) {
+        const sourceSize = Number(file.size);
+
+        // File listings include source size. Do not fetch an unbounded
+        // original if Drive could not report its size.
+        if (
+          !Number.isFinite(sourceSize) ||
+          sourceSize <= 0 ||
+          sourceSize > MAX_THUMBNAIL_BYTES
+        ) {
+          return empty;
+        }
+
+        blob = getGraphicImageBlob_(file);
+      }
+
+      const mimeType = String(blob.getContentType() || '').toLowerCase();
+
+      if (!/^image\/(png|jpeg|gif|webp)$/.test(mimeType)) {
+        return empty;
+      }
+
+      const bytes = blob.getBytes();
+
+      if (!bytes.length || bytes.length > MAX_THUMBNAIL_BYTES) {
+        return empty;
+      }
+
+      return {
+        dataUrl: 'data:' + mimeType + ';base64,' +
+          Utilities.base64Encode(bytes)
+      };
+    } catch (error) {
+      console.warn('Product thumbnail unavailable: ' + error.message);
+      return empty;
+    }
   }
 
   function generateProductDatasheetPdf(
     engineeringCode,
-    replacements
+    replacements,
+    standard
   ) {
     validateProductCode_(engineeringCode);
 
@@ -117,7 +201,8 @@
 
     const context =
       getProductTemplateContext_(
-        engineeringCode
+        engineeringCode,
+        standard
       );
 
     const serverPerformanceReplacements =
@@ -151,6 +236,23 @@
       }
     );
 
+    // Rated Point values and the standard label are authoritative on the server,
+    // just like the detailed curve values. Never accept stale RG20 values for SH10.
+    (mapping.computedFields || []).filter(function (field) {
+      return field.type === 'ratedPoint';
+    }).forEach(function (field) {
+      const row = (context.ratedPoints || [])[Number(field.index) || 0] || {};
+      const raw = row[field.source];
+      const text = raw === null || raw === undefined ? '' : String(raw).trim();
+      const blank = field.blankValue === undefined ? (mapping.blankValue || '') : field.blankValue;
+      const value = text ? String(field.prefix || '') + text + String(field.suffix || '') : String(blank);
+      const tags = (Array.isArray(field.tags) ? field.tags : []).concat(field.tag === undefined ? [] : [field.tag]);
+      tags.forEach(function (tag) {
+        tag = String(tag || '').trim();
+        if (tag && tag.toUpperCase() !== 'N/A' && !/^img_/i.test(tag)) mergedReplacements[tag] = value;
+      });
+    });
+
     const normalizedReplacements =
       validateReplacementMap_(
         mergedReplacements,
@@ -165,6 +267,7 @@
         true,
         resources,
         {
+          standard: context.ratedPoint.standard,
           performanceCurveTagGroups:
             context.performanceCurveTagGroups ||
             []
@@ -175,6 +278,8 @@
       context.performanceCurveDiagnostics
         ? context.performanceCurveDiagnostics.status
         : '';
+
+    result.standard = context.ratedPoint.standard;
 
     result.performanceCurveMatchedRows =
       context.performanceCurveDiagnostics
@@ -662,6 +767,9 @@
 
     getProductTemplateContext:
       getProductTemplateContext,
+
+    getProductThumbnail:
+      getProductThumbnail,
 
     generateProductDatasheetPdf:
       generateProductDatasheetPdf,

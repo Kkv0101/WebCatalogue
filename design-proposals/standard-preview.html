@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Condensing Unit Product Catalogue</title>
+  <style>
+    
+    :root {
+  --ink: #14232d;
+  --muted: #627587;
+  --toolbar: #172129;
+  --line: #d7e0e6;
+  --stripe: #f0f4f6;
+  --accent: #007d93;
+  --link: #0074cf;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; scroll-padding-top: calc(var(--catalogue-header-height, 140px) + 16px); }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: #fafcfd;
+  font-family: "Embraco BeauSans", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: .55; }
+button:focus-visible, select:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.hidden { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.skip-link { position: fixed; top: -80px; left: 16px; z-index: 150; padding: 12px 16px; background: #fff; color: var(--accent); }
+.skip-link:focus { top: 12px; }
+.filter-bar { position: sticky; top: 0; z-index: 20; background: var(--toolbar); border-bottom: 1px solid #34424a; }
+.filter-bar-inner { display: grid; grid-template-columns: 28px repeat(5, minmax(0, 1fr)) auto; align-items: center; gap: 14px; margin: 0 auto; padding: 14px 32px; max-width: 1920px; }
+.shared-columns-bar { color: var(--ink); background: #e9eef2; }
+.shared-columns-inner { max-width: 1920px; margin: 0 auto; padding: 0 32px; }
+.shared-columns-scroll { border-left: 1px solid transparent; border-right: 1px solid transparent; }
+.filter-icon { width: 24px; height: 24px; fill: #f3f8fa; }
+.filter-control { position: relative; display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 64px; padding: 7px 14px; color: #f3f7fa; border: 1px solid #526573; border-radius: 6px; background: #ffffff03; }
+.filter-control > span { padding-right: 14px; font-size: 11px; line-height: 1.4; }
+.filter-control::after { position: absolute; right: 15px; top: 30px; width: 8px; height: 8px; content: ""; border-right: 2px solid #eef6fa; border-bottom: 2px solid #eef6fa; transform: rotate(45deg); pointer-events: none; }
+.filter-control select { width: 100%; padding: 3px 22px 0 0; color: #fff; border: 0; background: transparent; appearance: none; font-size: 16px; line-height: 1.4; text-overflow: ellipsis; cursor: pointer; }
+.filter-text-control::after { display: none; }
+.filter-control input { width: 100%; min-width: 0; padding: 3px 0 0; color: #fff; border: 0; background: transparent; font-size: 16px; line-height: 1.4; }
+.filter-control input::placeholder { color: #b8c8d3; opacity: 1; }
+.filter-control option { color: var(--ink); background: #fff; }
+.filter-control:focus-within { outline: 2px solid #59dbe7; outline-offset: 2px; }
+.filter-control select:focus, .filter-control input:focus { outline: none; }
+.filter-control.is-active { border-color: #53d5e1; background: #28beca12; }
+.clear-filters { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 8px 0 8px 12px; color: #54dce8; background: none; border: 0; white-space: nowrap; font-size: 14px; }
+.clear-filters svg { width: 24px; height: 24px; }
+.clear-filters:focus-visible { outline-color: #54dce8; }
+.clear-filters:hover:not(:disabled) span { text-decoration: underline; text-underline-offset: 4px; }
+.catalogue-view { width: 100%; max-width: 1920px; margin: 0 auto; padding: 36px 32px 48px; }
+.page-heading { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 30px; }
+.eyebrow { margin: 0 0 8px; color: #4c6375; font-size: 10px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; }
+.page-heading h1 { margin: 0 0 8px; color: #101b22; font-size: clamp(28px, 3vw, 40px); line-height: 1.15; font-weight: 700; letter-spacing: -.025em; }
+.page-description { margin: 0; color: var(--muted); font-size: 14px; }
+.result-count { margin: 0 0 1px auto; color: #536b80; font-size: 13px; white-space: nowrap; }
+.model-groups { display: grid; gap: 24px; }
+.model-card { min-width: 0; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 5px #233d4c03; }
+.model-heading { margin: 0; font-size: inherit; }
+.model-toggle { display: flex; align-items: center; gap: 24px; width: 100%; min-height: 98px; padding: 14px 22px; color: var(--ink); background: #f6f8fa; border: 0; text-align: left; }
+.model-toggle:hover { background: #eef4f6; }
+.model-toggle:focus-visible { position: relative; z-index: 1; outline-offset: -4px; }
+.product-thumbnail { display: flex; align-items: center; justify-content: center; flex: 0 0 88px; width: 88px; height: 70px; color: #70818a; background: #e9eef2; border-radius: 7px; }
+.product-thumbnail img { width: 70px; height: 64px; object-fit: contain; mix-blend-mode: multiply; }
+.thumbnail-placeholder { width: 64px; height: 64px; }
+.model-title { display: flex; align-items: center; flex: 1; flex-wrap: wrap; gap: 8px 22px; min-width: 0; }
+.model-name { max-width: 100%; overflow-x: auto; white-space: nowrap; font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
+.variant-count { display: inline-block; padding: 5px 13px; color: #007b92; background: #d9f1f5; border-radius: 999px; font-size: 13px; line-height: 1.5; font-weight: 600; white-space: nowrap; }
+.group-chevron { width: 13px; height: 13px; flex: 0 0 13px; margin: 5px 4px 0 8px; border-top: 2px solid #425c70; border-left: 2px solid #425c70; transform: rotate(45deg); }
+.model-toggle[aria-expanded="false"] .group-chevron { transform: rotate(225deg); margin-top: -5px; }
+.table-scroll { width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.table-scroll:focus-visible { outline-offset: -3px; }
+.product-table { width: 100%; min-width: 880px; table-layout: fixed; border-collapse: separate; border-spacing: 0; text-align: left; }
+.product-table th { height: 46px; padding: 0 26px; color: #375166; background: #e9eef2; border-top: 1px solid #dce4e9; border-bottom: 1px solid #e2e8ec; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.product-table th + th, .product-table td + td { border-left: 1px solid #e8edf1; }
+.sort-button { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; max-width: 100%; padding: 0; color: inherit; background: none; border: 0; text-align: left; text-transform: inherit; font-size: inherit; font-weight: inherit; }
+.sort-icon { display: grid; flex: 0 0 7px; gap: 3px; }
+.sort-icon::before, .sort-icon::after { content: ""; width: 0; height: 0; border-left: 3.5px solid transparent; border-right: 3.5px solid transparent; }
+.sort-icon::before { border-bottom: 3.5px solid currentColor; }
+.sort-icon::after { border-top: 3.5px solid currentColor; }
+[aria-sort="ascending"] .sort-icon::after, [aria-sort="descending"] .sort-icon::before { opacity: .25; }
+.product-table td { height: 58px; padding: 7px 26px; font-size: 16px; overflow-wrap: anywhere; vertical-align: middle; }
+.product-table tbody tr:nth-child(even) { background: var(--stripe); }
+.product-table tbody tr:hover { background: #e8f4f7; }
+.code-cell { white-space: nowrap; }
+.pdf-button { display: inline-flex; align-items: center; gap: 12px; min-height: 42px; padding: 4px 0; color: var(--link); background: none; border: 0; white-space: nowrap; font-size: 14px; }
+.pdf-button svg { width: 21px; height: 26px; flex-shrink: 0; }
+.pdf-button:hover span { text-decoration: underline; text-underline-offset: 3px; }
+.empty-state { padding: 56px 24px; text-align: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+.empty-state h2 { margin: 0 0 8px; font-size: 22px; }
+.empty-state p { margin: 0 0 20px; color: var(--muted); }
+.empty-clear-filters { padding: 10px 18px; color: var(--accent); background: #e3f3f6; border: 1px solid #b5dbe2; border-radius: 5px; }
+.loading-overlay { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; color: var(--ink); background: #fafcfdf5; text-align: center; }
+.spinner { width: 40px; height: 40px; border: 4px solid #dce6eb; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; right: 24px; bottom: 24px; z-index: 120; max-width: min(440px, calc(100vw - 32px)); padding: 14px 18px; color: #fff; background: #203542; border-radius: 6px; box-shadow: 0 5px 20px #0003; }
+@media (max-width: 1100px) {
+  .filter-bar-inner { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px 24px; }
+  .filter-icon { display: none; }
+  .clear-filters { justify-self: end; }
+  .catalogue-view { padding: 28px 24px 40px; }
+  .shared-columns-inner { padding-right: 24px; padding-left: 24px; }
+  .product-table th, .product-table td { padding-left: 18px; padding-right: 18px; }
+}
+@media (max-width: 680px) {
+  .filter-bar-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 12px 16px; }
+  .filter-control { min-height: 60px; padding-left: 10px; padding-right: 10px; }
+  .filter-control::after { right: 12px; }
+  .clear-filters { justify-self: center; padding-left: 0; font-size: 13px; }
+  .catalogue-view { padding: 24px 16px 32px; }
+  .shared-columns-inner { padding-right: 16px; padding-left: 16px; }
+  .page-heading { margin-bottom: 22px; }
+  .page-description { line-height: 1.6; }
+  .result-count { margin-left: 0; font-size: 12px; }
+  .model-groups { gap: 18px; }
+  .model-toggle { min-height: 94px; padding: 14px 12px; gap: 12px; }
+  .product-thumbnail { flex-basis: 48px; width: 48px; height: 52px; }
+  .product-thumbnail img, .thumbnail-placeholder { width: 44px; height: 44px; }
+  .model-title { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+  .model-name { font-size: 18px; }
+  .variant-count { font-size: 11px; padding: 3px 9px; }
+  .group-chevron { width: 10px; height: 10px; flex-basis: 10px; margin-left: 0; margin-right: 1px; }
+}
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } }
+
+.product-table{min-width:1360px}
+.product-table th,.product-table td{padding-left:16px;padding-right:16px}
+.product-table th:nth-child(7),.product-table td:nth-child(7){text-align:center;white-space:nowrap}
+.product-table th:nth-child(7) .sort-button{width:100%;justify-content:center;text-align:center}
+.pdf-button{font-size:13px;gap:8px}
+.product-table th:nth-child(5),.product-table th:nth-child(6){color:#006e80;background:#e0f0f3}
+.product-table td:nth-child(5),.product-table td:nth-child(6){text-align:center;font-variant-numeric:tabular-nums;font-weight:600;color:#006b7b;background:#17a8b005}
+.product-table th:nth-child(2),.product-table td:nth-child(2),.product-table th:nth-child(3),.product-table td:nth-child(3),.product-table th:nth-child(5),.product-table td:nth-child(5),.product-table th:nth-child(6),.product-table td:nth-child(6){text-align:center}
+.product-table th:nth-child(2) .sort-button,.product-table th:nth-child(3) .sort-button,.product-table th:nth-child(5) .sort-button,.product-table th:nth-child(6) .sort-button{width:100%;justify-content:center;text-align:center}
+.rated-note{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:18px 0 0;font-size:12px;color:#627587}
+.rated-note strong{padding:6px 12px;border-radius:5px;background:#e0f2f5;color:#006e80;font-weight:600}
+.proposal-footer{margin-top:24px;padding-top:14px;border-top:1px solid #d7e0e6;color:#627587;font-size:12px;display:flex;justify-content:space-between;gap:16px}
+.proposal-footer strong{color:#006e80}
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#catalogue-view">Skip to catalogue</a>
+  <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <div id="loading-text">Loading catalogue…</div>
+  </div>
+  <header class="filter-bar">
+    <form id="catalogue-filters" class="filter-bar-inner" aria-label="Filter catalogue">
+      <svg class="filter-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v8l-4-2v-6z"/></svg>
+      <label class="filter-control filter-text-control"><span>Model</span><input id="filter-model" data-filter="model" type="text" placeholder="Type to filter models" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-describedby="model-filter-help"></label>
+      <span id="model-filter-help" class="visually-hidden">Models update as you type. Matching is not case-sensitive.</span>
+      <label class="filter-control"><span>Engineering Code</span><select id="filter-engineering-code" data-filter="engineeringCode"><option value="">All codes</option></select></label>
+      <label class="filter-control"><span>Refrigerant</span><select id="filter-refrigerant" data-filter="refrigerant"><option value="">All refrigerants</option></select></label>
+      <label class="filter-control"><span>Frequency / Rotation</span><select id="filter-frequency" data-filter="frequency"><option value="">All</option></select></label>
+      <label class="filter-control"><span>Power Supply</span><select id="filter-power-supply" data-filter="powerSupply"><option value="">All</option></select></label>
+      <button id="clear-filters" class="clear-filters" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 7a8 8 0 0 0-14-1L3 9m0-6v6h6M4 17a8 8 0 0 0 14 1l3-3m0 6v-6h-6"/></svg>
+        <span>Clear filters</span>
+      </button>
+    </form>
+    <div class="shared-columns-bar">
+      <div class="shared-columns-inner">
+        <div id="shared-columns-scroll" class="table-scroll shared-columns-scroll" role="region" aria-label="Catalogue columns and sorting. Scroll horizontally to see all columns." tabindex="0">
+          <table class="product-table shared-columns-table">
+            <caption class="visually-hidden">Column headings for all model tables</caption>
+            <colgroup id="shared-column-widths"></colgroup>
+            <thead><tr id="shared-column-headings"></tr></thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main id="catalogue-view" class="catalogue-view">
+    <div class="page-heading">
+      <div class="page-intro">
+        <p class="eyebrow">Product catalogue</p>
+        <h1 id="app-title">Condensing Units</h1>
+        <p class="page-description">Browse condensing units, compare rated performance and download datasheets.</p><p class="rated-note"><strong>Rated point</strong><span>Cooling capacity and COP at the rated conditions for the standard shown in each row.</span></p>
+      </div>
+      <p id="result-count" class="result-count" role="status" aria-live="polite" aria-atomic="true">Showing 0 models | 0 engineering codes</p>
+    </div>
+    <div id="model-groups" class="model-groups"></div>
+    <div id="empty-state" class="empty-state hidden" role="status">
+      <h2>No matching products</h2>
+      <p>Try a different combination or clear the filters to see all models.</p>
+      <button id="empty-clear-filters" class="empty-clear-filters" type="button">Clear filters</button>
+    </div>
+    <footer class="proposal-footer"><strong>Standard column &middot; Awaiting approval</strong><span>Illustrative standards and performance values from the reference image. Application unchanged.</span></footer>
+  </main>
+  <div id="toast" class="toast hidden" role="alert"></div>
+  <script>
+    window.APP_RUNTIME = {"ui":{}};
+    window.google={script:{run:{withSuccessHandler:function(callback){this.success=callback;return this;},withFailureHandler:function(){return this;},getCatalogueBootstrap:function(){this.success({products:[{"model":"UNEX2180UA","engineeringCode":"564DAE004AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","coolingCapacity":980,"cop":"1.95","standard":"EN13215 RG20"},{"model":"UNEX2180UA","engineeringCode":"564DAE404AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","coolingCapacity":1020,"cop":"2.02","standard":"EN13215 SH10"},{"model":"UNEX2180UA","engineeringCode":"564DAE704AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","coolingCapacity":1060,"cop":"2.08","standard":"ASHRAE"},{"model":"UNEX2190U","engineeringCode":"565CAE004AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","coolingCapacity":1120,"cop":"2.05","standard":"EN13215 RG20"},{"model":"UNEX2190U","engineeringCode":"565CAE404AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","coolingCapacity":1170,"cop":"2.11","standard":"EN13215 SH10"},{"model":"UNEX2190U","engineeringCode":"565CAE704AA","refrigerant":"R-290","frequency":"50","powerSupply":"220 - 240 V 50 Hz","coolingCapacity":1210,"cop":"2.18","standard":"ASHRAE"}]});}}}};
+    (function () {
+  'use strict';
+
+  const columns = [{"key":"engineeringCode","label":"Engineering Code","width":15},{"key":"refrigerant","label":"Refrigerant","width":11},{"key":"frequency","label":"Frequency / Rotation","width":11},{"key":"powerSupply","label":"Power Supply","width":15},{"key":"coolingCapacity","label":"Cooling Capacity [W]","width":11},{"key":"cop","label":"COP [W/W]","width":11},{"key":"standard","label":"Standard","width":12},{"key":"datasheet","label":"Documents","width":14}];
+  const state = {
+    products: [], filtered: [], filters: {}, initialQuery: '', modelExactMatch: false,
+    collapsedModels: new Set(), sort: { key: 'engineeringCode', direction: 1 },
+    tableScrollLeft: 0, syncedScrollPositions: new WeakMap(),
+    activePdfUrls: [], thumbnailCache: new Map(), thumbnailQueue: [],
+    thumbnailRequests: 0, thumbnailObserver: null
+  };
+  const ui = window.APP_RUNTIME && window.APP_RUNTIME.ui || {};
+  const el = {};
+  const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+  const pdfIcon = '<svg viewBox="0 0 24 30" fill="none" aria-hidden="true"><path d="M5 2h9l7 7v17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8"/><path d="M14 2v7h7" stroke="currentColor" stroke-width="1.8"/><text x="12" y="22" text-anchor="middle" fill="currentColor" font-family="Arial,sans-serif" font-size="8" font-weight="700">PDF</text></svg>';
+  const thumbnailPlaceholder = '<svg class="thumbnail-placeholder" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="m5 43 35-13 20 13-35 15Z M5 43v4l20 15 35-15v-4 M40 30V7l17 10v24 M40 7 25 13v20 M43 12v19m4-17v20m4-17v20m4-17v20"/><ellipse cx="23" cy="37" rx="10" ry="7"/><path d="M13 37V26c0-9 20-9 20 0v11 M13 26c0 9 20 9 20 0 M18 44v6m10-7v5 M11 40 7 37v-7h6 M33 34l5 3v7"/></svg>';
+
+  document.addEventListener('DOMContentLoaded', init);
+  window.addEventListener('beforeunload', revokeAllPdfUrls);
+
+  async function init() {
+    Object.assign(el, {
+      loading: document.getElementById('loading-overlay'),
+      loadingText: document.getElementById('loading-text'),
+      toast: document.getElementById('toast'),
+      form: document.getElementById('catalogue-filters'),
+      header: document.querySelector('.filter-bar'),
+      headings: document.getElementById('shared-column-headings'),
+      columnWidths: document.getElementById('shared-column-widths'),
+      headerScroll: document.getElementById('shared-columns-scroll'),
+      modelInput: document.getElementById('filter-model'),
+      groups: document.getElementById('model-groups'),
+      count: document.getElementById('result-count'),
+      empty: document.getElementById('empty-state'),
+      clear: document.getElementById('clear-filters')
+    });
+    document.title = ui.appTitle || 'Condensing Unit Product Catalogue';
+    document.getElementById('app-title').textContent = ui.catalogueHeading || 'Condensing Units';
+    el.columnWidths.innerHTML = renderColumnWidths();
+    el.headings.innerHTML = renderHeadings();
+    bindEvents();
+    updateHeaderHeight();
+    if ('ResizeObserver' in window) {
+      const headerObserver = new ResizeObserver(updateHeaderHeight);
+      headerObserver.observe(el.header);
+    }
+    try {
+      const bootstrap = await serverCall('getCatalogueBootstrap');
+      state.products = bootstrap.products || [];
+      populateFilters();
+      applyInitialProduct();
+      applyFilters();
+      hideLoading();
+    } catch (error) { showFatal(error); }
+  }
+
+  function textValue(product, key) {
+    return product[key] === null || product[key] === undefined ? '' : String(product[key]).trim();
+  }
+
+  function populateFilters() {
+    el.form.querySelectorAll('select[data-filter]').forEach(function (select) {
+      const values = Array.from(new Set(state.products.map(function (product) {
+        return textValue(product, select.dataset.filter);
+      }).filter(Boolean))).sort(collator.compare);
+      values.forEach(function (value) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    });
+  }
+
+  function applyInitialProduct() {
+    const initial = String(window.APP_RUNTIME && window.APP_RUNTIME.initialProduct || '').trim();
+    if (!initial) return;
+    const normalized = initial.toLowerCase();
+    const byCode = state.products.find(function (product) {
+      return textValue(product, 'engineeringCode').toLowerCase() === normalized;
+    });
+    const byModel = state.products.find(function (product) {
+      return textValue(product, 'model').toLowerCase() === normalized;
+    });
+    const key = byCode ? 'engineeringCode' : byModel ? 'model' : '';
+    if (key) {
+      const value = textValue(byCode || byModel, key);
+      state.filters[key] = value;
+      state.modelExactMatch = key === 'model';
+      el.form.querySelector('[data-filter="' + key + '"]').value = value;
+      showToast('Select Open PDF datasheet beside the desired engineering code.');
+    } else {
+      state.initialQuery = normalized;
+      showToast('No exact match for the product link. Clear filters to browse all models.');
+    }
+  }
+
+  function bindEvents() {
+    el.headings.addEventListener('click', function (event) {
+      const button = event.target.closest('[data-sort]');
+      if (!button) return;
+      const key = button.dataset.sort;
+      state.sort = { key: key, direction: state.sort.key === key ? -state.sort.direction : 1 };
+      el.headings.innerHTML = renderHeadings();
+      renderModelGroups();
+      el.headings.querySelector('[data-sort="' + key + '"]').focus({ preventScroll: true });
+    });
+    el.headerScroll.addEventListener('scroll', function () {
+      syncHorizontalScroll(el.headerScroll);
+    }, { passive: true });
+    el.groups.addEventListener('scroll', function (event) {
+      if (event.target.matches('.table-scroll') && !event.target.hidden) {
+        syncHorizontalScroll(event.target);
+      }
+    }, { capture: true, passive: true });
+    window.addEventListener('resize', function () {
+      updateHeaderHeight();
+      syncHorizontalScroll(el.headerScroll);
+    });
+    el.form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      updateModelFilter();
+    });
+    el.modelInput.addEventListener('input', updateModelFilter);
+    el.form.addEventListener('change', function (event) {
+      const select = event.target.closest('select[data-filter]');
+      if (!select) return;
+      state.initialQuery = '';
+      if (select.value) state.filters[select.dataset.filter] = select.value;
+      else delete state.filters[select.dataset.filter];
+      applyFilters();
+    });
+    el.clear.addEventListener('click', clearFilters);
+    document.getElementById('empty-clear-filters').addEventListener('click', function () {
+      clearFilters();
+      el.modelInput.focus();
+    });
+    el.groups.addEventListener('click', function (event) {
+      const pdf = event.target.closest('[data-code]');
+      if (pdf) { showToast('Design preview: PDF download is available in the application.'); return; }
+      const toggle = event.target.closest('[data-toggle-model]');
+      if (toggle) {
+        const model = toggle.dataset.toggleModel;
+        const collapse = toggle.getAttribute('aria-expanded') === 'true';
+        if (collapse) state.collapsedModels.add(model);
+        else state.collapsedModels.delete(model);
+        toggle.setAttribute('aria-expanded', String(!collapse));
+        const tableScroll = document.getElementById(toggle.getAttribute('aria-controls'));
+        tableScroll.hidden = collapse;
+        if (!collapse) setTableScroll(tableScroll, state.tableScrollLeft);
+        return;
+      }
+    });
+  }
+
+  function updateHeaderHeight() {
+    document.documentElement.style.setProperty('--catalogue-header-height', el.header.getBoundingClientRect().height + 'px');
+  }
+
+  function syncHorizontalScroll(source) {
+    const expected = state.syncedScrollPositions.get(source);
+    state.syncedScrollPositions.delete(source);
+    // Programmatic follower events must not overwrite a newer user scroll.
+    if (expected === source.scrollLeft) return;
+    const maximum = Math.max(0, el.headerScroll.scrollWidth - el.headerScroll.clientWidth);
+    state.tableScrollLeft = Math.min(source.scrollLeft, maximum);
+    [el.headerScroll].concat(Array.from(el.groups.querySelectorAll('.table-scroll'))).forEach(function (scroll) {
+      setTableScroll(scroll, state.tableScrollLeft);
+    });
+  }
+
+  function setTableScroll(scroll, left) {
+    if (scroll.hidden || scroll.scrollLeft === left) return;
+    scroll.scrollLeft = left;
+    state.syncedScrollPositions.set(scroll, scroll.scrollLeft);
+  }
+
+  function renderColumnWidths() {
+    return columns.map(function (column) { return '<col style="width:' + column.width + '%">'; }).join('');
+  }
+
+  function updateModelFilter() {
+    const query = el.modelInput.value.trim();
+    // Read a trimmed query without changing the text or caret while typing.
+    state.initialQuery = '';
+    state.modelExactMatch = false;
+    if (query) state.filters.model = query;
+    else delete state.filters.model;
+    applyFilters();
+  }
+
+  function updateClearFiltersState() {
+    el.clear.disabled = !state.initialQuery && !Object.keys(state.filters).length && !el.modelInput.value.trim();
+  }
+
+  function clearFilters() {
+    state.filters = {};
+    state.initialQuery = '';
+    state.modelExactMatch = false;
+    el.form.querySelectorAll('[data-filter]').forEach(function (select) { select.value = ''; });
+    applyFilters();
+  }
+
+  function applyFilters() {
+    state.filtered = state.products.filter(function (product) {
+      if (state.initialQuery && ![product.model, product.engineeringCode].join(' ').toLowerCase().includes(state.initialQuery)) return false;
+      return Object.keys(state.filters).every(function (key) {
+        if (key === 'model' && !state.modelExactMatch) {
+          return textValue(product, key).toLowerCase().includes(state.filters.model.toLowerCase());
+        }
+        return textValue(product, key) === state.filters[key];
+      });
+    });
+    el.form.querySelectorAll('[data-filter]').forEach(function (control) {
+      control.closest('.filter-control').classList.toggle('is-active', Boolean(state.filters[control.dataset.filter]));
+    });
+    updateClearFiltersState();
+    renderModelGroups();
+  }
+
+  function groupProductsByModel(products) {
+    const groups = new Map();
+    products.forEach(function (product) {
+      const model = textValue(product, 'model');
+      if (!groups.has(model)) groups.set(model, []);
+      groups.get(model).push(product);
+    });
+    return Array.from(groups.entries()).sort(function (left, right) {
+      return collator.compare(left[0], right[0]);
+    }).map(function (entry) {
+      const sort = state.sort;
+      const variants = entry[1].slice().sort(function (left, right) {
+        const a = textValue(left, sort.key), b = textValue(right, sort.key);
+        if (!a || !b) return a === b ? 0 : !a ? 1 : -1;
+        return collator.compare(a, b) * sort.direction;
+      });
+      return { model: entry[0], products: variants };
+    });
+  }
+
+  function renderHeadings() {
+    const sort = state.sort;
+    return columns.map(function (column) {
+      if (column.key === 'datasheet') return '<th scope="col">Documents</th>';
+      const active = sort.key === column.key;
+      const direction = active ? sort.direction === 1 ? 'ascending' : 'descending' : 'none';
+      const next = active && sort.direction === 1 ? 'descending' : 'ascending';
+      return '<th scope="col" aria-sort="' + direction + '"><button type="button" class="sort-button" data-sort="' + column.key +
+        '" aria-label="' + escapeHtml('Sort all model tables by ' + column.label + ', ' + next) + '">' +
+        '<span>' + column.label + '</span><span class="sort-icon" aria-hidden="true"></span></button></th>';
+    }).join('');
+  }
+
+  function renderVariant(product) {
+    return '<tr>' + columns.map(function (column) {
+      if (column.key === 'datasheet') {
+        const label = 'Open PDF datasheet for ' + product.model + ', ' + product.engineeringCode + ' (new tab)';
+        return '<td><button type="button" class="pdf-button" data-code="' + escapeHtml(product.engineeringCode) +
+          '" data-model="' + escapeHtml(product.model) + '" aria-label="' + escapeHtml(label) + '">' +
+          pdfIcon + '<span>Open PDF datasheet</span></button></td>';
+      }
+      return '<td' + (column.key === 'engineeringCode' ? ' class="code-cell"' : '') + '>' +
+        escapeHtml(textValue(product, column.key) || '—') + '</td>';
+    }).join('') + '</tr>';
+  }
+
+  function renderModelGroups() {
+    if (state.thumbnailObserver) state.thumbnailObserver.disconnect();
+    const groups = groupProductsByModel(state.filtered);
+    el.groups.innerHTML = groups.map(function (group, index) {
+      const drawing = group.products.find(function (product) { return product.drawing3d; }) || group.products[0];
+      const expanded = !state.collapsedModels.has(group.model);
+      const count = group.products.length + (group.products.length === 1 ? ' engineering code' : ' engineering codes');
+      return '<section class="model-card" data-model-group="' + escapeHtml(group.model) + '" aria-labelledby="model-name-' + index + '">' +
+        '<h2 class="model-heading"><button type="button" class="model-toggle" data-toggle-model="' + escapeHtml(group.model) +
+          '" aria-expanded="' + expanded + '" aria-controls="model-variants-' + index + '" aria-labelledby="model-name-' + index + ' model-count-' + index + '">' +
+          '<span class="product-thumbnail" data-thumbnail-key="' + escapeHtml(drawing.drawing3d || '') + '" data-thumbnail-code="' + escapeHtml(drawing.engineeringCode) + '" aria-hidden="true">' + thumbnailPlaceholder + '</span>' +
+          '<span class="model-title"><span id="model-name-' + index + '" class="model-name">' + escapeHtml(group.model) + '</span>' +
+          '<span id="model-count-' + index + '" class="variant-count">' + count + '</span></span>' +
+          '<span class="group-chevron" aria-hidden="true"></span></button></h2>' +
+        '<div class="table-scroll" id="model-variants-' + index + '" role="region" aria-label="' + escapeHtml(group.model + ' engineering codes. Scroll horizontally on smaller screens.') + '" tabindex="0"' + (expanded ? '' : ' hidden') + '>' +
+          '<table class="product-table"><caption class="visually-hidden">' + escapeHtml(group.model + ' engineering codes and PDF datasheets') + '</caption>' +
+          '<colgroup>' + renderColumnWidths() + '</colgroup>' +
+          '<thead class="visually-hidden"><tr>' + columns.map(function (column) {
+            return '<th scope="col">' + column.label + '</th>';
+          }).join('') + '</tr></thead>' +
+          '<tbody>' + group.products.map(renderVariant).join('') + '</tbody></table></div></section>';
+    }).join('');
+    el.count.textContent = 'Showing ' + groups.length + (groups.length === 1 ? ' model' : ' models') +
+      ' | ' + state.filtered.length + (state.filtered.length === 1 ? ' engineering code' : ' engineering codes');
+    el.empty.classList.toggle('hidden', state.filtered.length !== 0);
+    el.groups.querySelectorAll('.table-scroll').forEach(function (scroll) {
+      setTableScroll(scroll, state.tableScrollLeft);
+    });
+    observeThumbnails();
+  }
+
+  function observeThumbnails() {
+    const thumbnails = el.groups.querySelectorAll('[data-thumbnail-key]');
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { queueThumbnail(entry.target); observer.unobserve(entry.target); }
+        });
+      }, { root: null, rootMargin: '120px' });
+      state.thumbnailObserver = observer;
+    }
+    thumbnails.forEach(function (thumbnail) {
+      const key = thumbnail.dataset.thumbnailKey;
+      if (!key) return;
+      const cached = state.thumbnailCache.get(key);
+      if (cached && cached.ready) setThumbnail(thumbnail, cached.dataUrl);
+      else if (state.thumbnailObserver) state.thumbnailObserver.observe(thumbnail);
+      else queueThumbnail(thumbnail);
+    });
+  }
+
+  function queueThumbnail(thumbnail) {
+    const key = thumbnail.dataset.thumbnailKey;
+    if (!key || state.thumbnailCache.has(key)) return;
+    state.thumbnailCache.set(key, { ready: false, dataUrl: '' });
+    state.thumbnailQueue.push({ key: key, code: thumbnail.dataset.thumbnailCode });
+    loadNextThumbnails();
+  }
+
+  function loadNextThumbnails() {
+    while (state.thumbnailRequests < 3 && state.thumbnailQueue.length) {
+      const item = state.thumbnailQueue.shift();
+      state.thumbnailRequests += 1;
+      serverCall('getProductThumbnail', item.code).then(function (result) {
+        const dataUrl = result && /^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+/=]+$/.test(result.dataUrl || '') ? result.dataUrl : '';
+        state.thumbnailCache.set(item.key, { ready: true, dataUrl: dataUrl });
+        el.groups.querySelectorAll('[data-thumbnail-key]').forEach(function (thumbnail) {
+          if (thumbnail.dataset.thumbnailKey === item.key) setThumbnail(thumbnail, dataUrl);
+        });
+      }).catch(function () {
+        state.thumbnailCache.set(item.key, { ready: true, dataUrl: '' });
+      }).finally(function () { state.thumbnailRequests -= 1; loadNextThumbnails(); });
+    }
+  }
+
+  function setThumbnail(thumbnail, dataUrl) {
+    if (!dataUrl) return;
+    const img = document.createElement('img');
+    img.alt = '';
+    img.width = 66; img.height = 66;
+    img.decoding = 'async';
+    img.addEventListener('error', function () { thumbnail.innerHTML = thumbnailPlaceholder; });
+    img.src = dataUrl;
+    thumbnail.replaceChildren(img);
+  }
+
+  // Keep the synchronous popup opening and existing PDF generation flow.
+  async function openProductInNewTab(code, model) {
+    const pdfWindow = window.open('', '_blank');
+
+    if (!pdfWindow) {
+      showToast(
+        'The browser blocked the PDF tab. ' +
+        'Allow pop-ups for this Apps Script application and try again.'
+      );
+      return;
+    }
+
+    writeLoadingPage(pdfWindow, model, code);
+    showLoading(
+      'Generating ' +
+      (model || code) +
+      ' PDF datasheet…'
+    );
+
+    try {
+      if (
+        !window.TemplateMappingService ||
+        typeof window.TemplateMappingService.buildReplacementMap !==
+          'function'
+      ) {
+        throw new Error(
+          'TemplateMappingService.js is not loaded.'
+        );
+      }
+
+      const context = await serverCall(
+        'getProductTemplateContext',
+        code
+      );
+
+      const mapping =
+        window.APP_RUNTIME &&
+        window.APP_RUNTIME.parameterMapping;
+
+      const replacements =
+        window.TemplateMappingService.buildReplacementMap(
+          context,
+          mapping
+        );
+
+      const result = await serverCall(
+        'generateProductDatasheetPdf',
+        code,
+        replacements
+      );
+
+      if (!result || !result.base64) {
+        throw new Error(
+          'The server did not return PDF data.'
+        );
+      }
+
+      const pdfBlob = base64ToBlob(
+        result.base64,
+        result.mimeType || 'application/pdf'
+      );
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      state.activePdfUrls.push(pdfUrl);
+
+      // The browser's native PDF viewer works when the Blob URL is loaded in
+      // a top-level tab. It may be blocked only when nested in an Apps Script
+      // iframe.
+      pdfWindow.location.replace(pdfUrl);
+
+      showWarnings(result.warnings || [], result);
+      schedulePdfUrlCleanup(pdfUrl);
+    } catch (error) {
+      writeErrorPage(
+        pdfWindow,
+        error.message || String(error)
+      );
+      showToast(error.message || String(error));
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function writeLoadingPage(targetWindow, model, code) {
+    try {
+      targetWindow.document.open();
+      targetWindow.document.write(
+        '<!doctype html>' +
+        '<html lang="en"><head><meta charset="utf-8">' +
+        '<title>Generating datasheet</title>' +
+        '<style>' +
+          'body{' +
+            'margin:0;min-height:100vh;display:flex;' +
+            'align-items:center;justify-content:center;' +
+            'font-family:Arial,Helvetica,sans-serif;' +
+            'background:#eef2f3;color:#293437;' +
+          '}' +
+          '.box{text-align:center;padding:32px;}' +
+          '.spinner{' +
+            'width:42px;height:42px;margin:0 auto 18px;' +
+            'border:4px solid #cbd7d9;' +
+            'border-top-color:#078a98;border-radius:50%;' +
+            'animation:spin .8s linear infinite;' +
+          '}' +
+          '@keyframes spin{to{transform:rotate(360deg)}}' +
+          'h1{font-size:20px;margin:0 0 8px;}' +
+          'p{margin:0;color:#69787b;}' +
+        '</style></head><body>' +
+        '<div class="box">' +
+          '<div class="spinner"></div>' +
+          '<h1>Generating PDF datasheet</h1>' +
+          '<p>' +
+            escapeHtml(
+              [model, code].filter(Boolean).join(' — ')
+            ) +
+          '</p>' +
+        '</div>' +
+        '</body></html>'
+      );
+      targetWindow.document.close();
+    } catch (error) {
+      console.warn(
+        'Could not write the PDF loading page:',
+        error
+      );
+    }
+  }
+
+  function writeErrorPage(targetWindow, message) {
+    try {
+      targetWindow.document.open();
+      targetWindow.document.write(
+        '<!doctype html>' +
+        '<html lang="en"><head><meta charset="utf-8">' +
+        '<title>Datasheet generation failed</title>' +
+        '<style>' +
+          'body{' +
+            'margin:0;min-height:100vh;display:flex;' +
+            'align-items:center;justify-content:center;' +
+            'font-family:Arial,Helvetica,sans-serif;' +
+            'background:#f7f0f0;color:#502929;' +
+          '}' +
+          '.box{' +
+            'max-width:700px;padding:32px;' +
+            'background:#fff;border:1px solid #d9bcbc;' +
+            'border-radius:8px;' +
+          '}' +
+          'h1{margin:0 0 12px;font-size:22px;}' +
+          'p{white-space:pre-wrap;line-height:1.5;}' +
+        '</style></head><body>' +
+        '<div class="box">' +
+          '<h1>Datasheet generation failed</h1>' +
+          '<p>' + escapeHtml(message) + '</p>' +
+        '</div>' +
+        '</body></html>'
+      );
+      targetWindow.document.close();
+    } catch (error) {
+      console.warn(
+        'Could not write the PDF error page:',
+        error
+      );
+    }
+  }
+
+  function showWarnings(warnings, result) {
+    if (!warnings.length) return;
+
+    console.warn(
+      'Datasheet generated with warnings:',
+      {
+        model: result.model,
+        engineeringCode: result.engineeringCode,
+        warnings: warnings
+      }
+    );
+
+    showToast(
+      'PDF opened with ' +
+      warnings.length +
+      (
+        warnings.length === 1
+          ? ' template warning. '
+          : ' template warnings. '
+      ) +
+      'Check the browser console for details.'
+    );
+  }
+
+  function schedulePdfUrlCleanup(pdfUrl) {
+    // Keep the Blob URL available long enough for the native PDF viewer and
+    // printing. It is also revoked when the catalogue tab is closed.
+    window.setTimeout(function () {
+      const index = state.activePdfUrls.indexOf(pdfUrl);
+
+      if (index !== -1) {
+        URL.revokeObjectURL(pdfUrl);
+        state.activePdfUrls.splice(index, 1);
+      }
+    }, 30 * 60 * 1000);
+  }
+
+  function revokeAllPdfUrls() {
+    state.activePdfUrls.forEach(function (url) {
+      URL.revokeObjectURL(url);
+    });
+
+    state.activePdfUrls = [];
+  }
+
+  function base64ToBlob(base64, mimeType) {
+    const binary = window.atob(base64);
+    const chunkSize = 1024 * 1024;
+    const chunks = [];
+
+    for (
+      let offset = 0;
+      offset < binary.length;
+      offset += chunkSize
+    ) {
+      const slice = binary.slice(
+        offset,
+        offset + chunkSize
+      );
+
+      const bytes = new Uint8Array(slice.length);
+
+      for (
+        let index = 0;
+        index < slice.length;
+        index += 1
+      ) {
+        bytes[index] = slice.charCodeAt(index);
+      }
+
+      chunks.push(bytes);
+    }
+
+    return new Blob(chunks, {
+      type: mimeType
+    });
+  }
+
+  function serverCall(functionName) {
+    const args =
+      Array.prototype.slice.call(arguments, 1);
+
+    return new Promise(function (resolve, reject) {
+      if (
+        !window.google ||
+        !google.script ||
+        !google.script.run
+      ) {
+        reject(
+          new Error(
+            'This page must be opened through ' +
+            'the deployed Google Apps Script web app.'
+          )
+        );
+        return;
+      }
+
+      let runner = google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(function (error) {
+          reject(
+            new Error(
+              error && error.message
+                ? error.message
+                : String(error)
+            )
+          );
+        });
+
+      runner[functionName].apply(
+        runner,
+        args
+      );
+    });
+  }
+
+  function showLoading(text) {
+    el.loadingText.textContent =
+      text || 'Loading…';
+
+    el.loading.classList.remove('hidden');
+  }
+
+  function hideLoading() {
+    el.loading.classList.add('hidden');
+  }
+
+  function showToast(message) {
+    el.toast.textContent = message;
+    el.toast.classList.remove('hidden');
+
+    window.setTimeout(function () {
+      el.toast.classList.add('hidden');
+    }, 7000);
+  }
+
+  function showFatal(error) {
+    el.loadingText.textContent =
+      'Application error: ' +
+      (error.message || String(error));
+  }
+
+  function escapeHtml(value) {
+    return String(
+      value === null ||
+      value === undefined
+        ? ''
+        : value
+    )
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+})();
+
+  </script>
+</body>
+</html>

@@ -173,6 +173,13 @@ function getServerModuleRuntime_() {
 
       listProductSummaries_: listProductSummaries_,
       getProductTemplateContext_: getProductTemplateContext_,
+      getProductThumbnailReference_: getProductThumbnailReference_,
+
+      resolveGraphicFile_:
+        driveFileService.resolveGraphicFile_,
+
+      getGraphicImageBlob_:
+        driveFileService.getGraphicImageBlob_,
 
       getRequiredWebResources_:
         driveFileService.getRequiredWebResources_,
@@ -213,12 +220,15 @@ function getServerModuleRuntime_() {
       clearAllCatalogueCaches_: clearAllCatalogueCaches_,
 
       Drive: Drive,
+      DriveApp: DriveApp,
+      Utilities: Utilities,
       console: console,
       Date: Date
     },
     [
       'getCatalogueBootstrap',
       'getProductTemplateContext',
+      'getProductThumbnail',
       'generateProductDatasheetPdf',
       'refreshCatalogueCache',
       'testConfiguration',

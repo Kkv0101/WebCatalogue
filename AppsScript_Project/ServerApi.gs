@@ -12,21 +12,29 @@ function getCatalogueBootstrap() {
     .getCatalogueBootstrap();
 }
 
-function getProductTemplateContext(engineeringCode) {
+function getProductTemplateContext(engineeringCode, standard) {
   return getServerModuleRuntime_()
     .catalogueService
-    .getProductTemplateContext(engineeringCode);
+    .getProductTemplateContext(engineeringCode, standard);
+}
+
+function getProductThumbnail(engineeringCode) {
+  return getServerModuleRuntime_()
+    .catalogueService
+    .getProductThumbnail(engineeringCode);
 }
 
 function generateProductDatasheetPdf(
   engineeringCode,
-  replacements
+  replacements,
+  standard
 ) {
   return getServerModuleRuntime_()
     .catalogueService
     .generateProductDatasheetPdf(
       engineeringCode,
-      replacements
+      replacements,
+      standard
     );
 }
 

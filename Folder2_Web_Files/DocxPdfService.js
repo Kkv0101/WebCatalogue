@@ -74,7 +74,8 @@
 
     const context =
       getProductTemplateContext_(
-        engineeringCode
+        engineeringCode,
+        generationOptions.standard
       );
 
     const warnings = (
@@ -207,7 +208,8 @@
         .getAs(CATALOGUE_CONFIG.PDF_MIME_TYPE)
         .setName(
           buildPdfFileName_(
-            context.productRow
+            context.productRow,
+            context.ratedPoint.standard
           )
         );
 
@@ -1056,10 +1058,11 @@
     ].filter(Boolean).join('_');
   }
 
-  function buildPdfFileName_(productRow) {
+  function buildPdfFileName_(productRow, standard) {
     const parts = [
       safeFileNamePart_(productRow.ZZMODEL),
       safeFileNamePart_(productRow.MATNR),
+      safeFileNamePart_(standard),
       'Datasheet'
     ].filter(Boolean);
 
